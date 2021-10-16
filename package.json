@@ -50,6 +50,7 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
+    "@notionhq/client": "^0.4.4",
     "save": "^2.4.0"
   }
 }

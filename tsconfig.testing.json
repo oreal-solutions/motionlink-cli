@@ -11,5 +11,5 @@
   "compileOnSave": true,
   "include": [
     "src"
-, "test"  ]
+  ]
 }
