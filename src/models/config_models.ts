@@ -21,18 +21,22 @@ export type Context = {
   genMarkdownForPage: (notionPage: NotionPage) => string;
 };
 
-export type SortParams =
-  | { property: string; direction: 'ascending' | 'descending' }
+export type SortsParams = Array<
+  | {
+      property: string;
+      direction: 'ascending' | 'descending';
+    }
   | {
       timestamp: 'created_time' | 'last_edited_time';
       direction: 'ascending' | 'descending';
-    };
+    }
+>;
 
 export type DatabaseRule = {
   database: string;
   takeOnly?: number;
   map?: (notionPage: NotionPage, context: Context) => NotionPage;
-  sort?: SortParams;
+  sort?: SortsParams;
 
   /**
    * See: https://developers.notion.com/reference/post-database-query#post-database-query-filter
