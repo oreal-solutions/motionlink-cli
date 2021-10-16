@@ -1,7 +1,9 @@
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionDatabaseAssociation, Token } from '../models/app_models';
 import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, TemplateRule } from '../models/config_models';
+import { render } from 'mustache';
 import NotionService from './notion_service';
+import fs = require('fs');
 
 export interface BuildService {
   build: (templateRules: TemplateRule[], databaseAssociations: NotionDatabaseAssociation[]) => Promise<void>;
@@ -9,6 +11,7 @@ export interface BuildService {
     rule: DatabaseRule,
     databaseAssociations: NotionDatabaseAssociation[],
   ) => NotionDatabaseAssociation;
+  _getFileExtension: (path: string) => string;
 }
 
 export function newBuildService(): BuildService {
@@ -38,7 +41,15 @@ class _BuildService implements BuildService {
     }
   }
 
-  private async populatePage(templateRule: TemplateRule, page: NotionPage): Promise<void> {}
+  private async populatePage(templateRule: TemplateRule, page: NotionPage): Promise<void> {
+    const title = page.data.properties.title;
+    let titleString = page.data.id;
+    if (title.type === 'title' && title.title.length !== 0) titleString = title.title[0].plain_text;
+
+    const template = this.readCacheableStringFile(templateRule.template);
+    const out = render(template, page);
+    fs.writeFileSync(titleString, out);
+  }
 
   private async fetchAllSecondaryDatabases(
     databaseRules: DatabaseRule[],
@@ -138,6 +149,14 @@ class _BuildService implements BuildService {
     return '# Markdown';
   }
 
+  private readCacheableStringFile(path: string): string {
+    if (this.fileChache.get(path)) return this.fileChache.get(path) as string;
+
+    const text = fs.readFileSync(path).toString();
+    this.fileChache.set(path, text);
+    return text;
+  }
+
   public _getDatabaseAssociationForDatabaseRuleAndThrowIfNotExists(
     rule: DatabaseRule,
     databaseAssociations: NotionDatabaseAssociation[],
@@ -147,4 +166,13 @@ class _BuildService implements BuildService {
 
     return filtered[0];
   }
+
+  public _getFileExtension(path: string) {
+    const index = path.lastIndexOf('.');
+    if (index < 0) return '';
+
+    return path.substring(index + 1);
+  }
+
+  private fileChache: Map<string, string> = new Map();
 }

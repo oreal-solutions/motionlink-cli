@@ -47,4 +47,14 @@ describe('BuildService tests', () => {
       expect(thrownError.message).to.equal('The database association "abc" does not exist.');
     });
   });
+
+  describe('_getFileExtension', () => {
+    it("Should return 'md' when given 'abc.def.md'", () => {
+      expect(newBuildService()._getFileExtension('abc.def.md')).to.equal('md');
+    });
+
+    it("Should return empty string when given 'abc'", () => {
+      expect(newBuildService()._getFileExtension('abc')).to.be.empty;
+    });
+  });
 });

@@ -23,7 +23,7 @@ export default class NotionService {
   }): AsyncGenerator<GetPageResponse, void, undefined> {
     const notion = this.initNotionClient(args.withToken);
     let hasMore = true;
-    let nextCursor: string | null = null;
+    let nextCursor: string | undefined = undefined;
 
     while (hasMore) {
       const response = await resultOf(() =>
@@ -32,12 +32,13 @@ export default class NotionService {
           page_size: args.takeOnly,
           sorts: args.sort,
           filter: args.filter as any,
+          start_cursor: nextCursor,
         }),
       );
 
       yield* response.results;
       hasMore = response.has_more;
-      nextCursor = response.next_cursor;
+      nextCursor = response.next_cursor as any;
     }
   }
 
@@ -54,18 +55,19 @@ export default class NotionService {
   }): AsyncGenerator<GetBlockResponse, void, undefined> {
     const notion = this.initNotionClient(args.withToken);
     let hasMore = true;
-    let nextCursor: string | null = null;
+    let nextCursor: string | undefined = undefined;
 
     while (hasMore) {
       const response = await resultOf(() =>
         notion.blocks.children.list({
           block_id: args.blockId,
+          start_cursor: nextCursor,
         }),
       );
 
       yield* response.results;
       hasMore = response.has_more;
-      nextCursor = response.next_cursor;
+      nextCursor = response.next_cursor as any;
     }
   }
 
