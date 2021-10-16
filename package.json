@@ -1,0 +1,55 @@
+{
+  "name": "motionlink-cli",
+  "version": "0.1.1",
+  "description": "Making it easy to use Notion as a Content Management system for personal websites, portfolios, blogs, business homepages, and other kinds of static websites.",
+  "main": "lib/main.js",
+  "types": "lib/main.d.ts",
+  "scripts": {
+    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register test/**/*.ts",
+    "build": "tsc",
+    "format": "prettier --write \"*/**/*.tsx\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oreal-solutions/motionlink-cli"
+  },
+  "keywords": [
+    "reactive",
+    "state",
+    "react"
+  ],
+  "author": "Oreal Solutions",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oreal-solutions/motionlink-cli/issues"
+  },
+  "homepage": "https://github.com/oreal-solutions/motionlink-cli#readme",
+  "files": [
+    "lib/**/*",
+    "LICENSE"
+  ],
+  "bin": {
+    "motionlink": "./lib/main.js"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "chai": "^4.3.4",
+    "cross-env": "^7.0.3",
+    "mocha": "^9.1.2",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "save": "^2.4.0"
+  }
+}
