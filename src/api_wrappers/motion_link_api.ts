@@ -27,8 +27,9 @@ export default class MotionLinkApi {
       return response.data as any;
     } catch (e) {
       const error = e as AxiosError;
-      if (error.response) {
-        throw new Error(`${error.response.data}`);
+      if (error.response && error.response.status === 500) {
+        // Server reports all errors with 500 status code
+        throw new Error(`${(error.response.data as any).message}`);
       } else {
         throw e;
       }
