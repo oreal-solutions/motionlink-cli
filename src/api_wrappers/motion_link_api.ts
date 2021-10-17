@@ -1,5 +1,5 @@
 import { StringResponseBody, Token } from '../models/app_models';
-import fetch from 'node-fetch';
+import axios from "axios";
 
 export default class MotionLinkApi {
   public getNotionTokenForLink(linkAccessKey: string): Promise<Token> {
@@ -21,15 +21,10 @@ export default class MotionLinkApi {
 
   private async callHttpFunction(name: string, body: object): Promise<any> {
     const endpoint = `https://us-central1-motionlink-aec23.cloudfunctions.net/cli_tool_service-api/${name}`;
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const response = await axios.post(endpoint, body);
 
-    if (!response.ok) throw new Error(await response.text());
-
-    return (await response.json()) as any;
+    if (response.status !== 200) throw new Error(`${response.data}`);
+    return (await response.data) as any;
   }
 
   private static _instance: MotionLinkApi;
