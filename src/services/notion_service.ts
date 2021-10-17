@@ -4,6 +4,8 @@ import { Token } from '../models/app_models';
 import { SortsParams } from '../models/config_models';
 import { resultOf } from './notion_service_utils';
 
+const ALL = Number.POSITIVE_INFINITY;
+
 export default class NotionService {
   public getDatabase(args: { withId: string; withToken: Token }): Promise<GetDatabaseResponse> {
     const notion = this.initNotionClient(args.withToken);
@@ -22,24 +24,36 @@ export default class NotionService {
     filter?: object;
   }): AsyncGenerator<GetPageResponse, void, undefined> {
     const notion = this.initNotionClient(args.withToken);
+    let pagesToReadCount = ALL;
+    if (args.takeOnly !== undefined) pagesToReadCount = args.takeOnly;
+
+    let readPages: GetPageResponse[] = [];
+
+    function shouldReadMorePages() {
+      return readPages.length < pagesToReadCount;
+    }
+
     let hasMore = true;
     let nextCursor: string | undefined;
 
-    while (hasMore) {
+    while (hasMore && shouldReadMorePages()) {
       const response = await resultOf(() =>
         notion.databases.query({
           database_id: args.databaseId,
-          page_size: args.takeOnly,
+          page_size: Math.min(pagesToReadCount - readPages.length, 100),
           sorts: args.sort,
           filter: args.filter as any,
+
           start_cursor: nextCursor,
         }),
       );
 
-      yield* response.results;
+      readPages = readPages.concat(response.results);
       hasMore = response.has_more;
       nextCursor = response.next_cursor as any;
     }
+
+    yield* readPages;
   }
 
   public getPageBlocks(args: { pageId: string; withToken: Token }): AsyncGenerator<GetBlockResponse, void, undefined> {
