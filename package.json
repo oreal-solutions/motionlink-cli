@@ -13,7 +13,9 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prebuild": "npm run clean",
+    "clean": "rimraf lib/"
   },
   "repository": {
     "type": "git",
@@ -54,6 +56,7 @@
     "@notionhq/client": "^0.4.4",
     "mustache": "^4.2.0",
     "node-fetch": "^3.0.0",
+    "rimraf": "^3.0.2",
     "save": "^2.4.0"
   }
 }
