@@ -49,8 +49,8 @@ describe('BuildService tests', () => {
   });
 
   describe('_getFileExtension', () => {
-    it("Should return 'md' when given 'abc.def.md'", () => {
-      expect(newBuildService()._getFileExtension('abc.def.md')).to.equal('md');
+    it("Should return '.md' when given 'abc.def.md'", () => {
+      expect(newBuildService()._getFileExtension('abc.def.md')).to.equal('.md');
     });
 
     it("Should return empty string when given 'abc'", () => {

@@ -171,7 +171,7 @@ class BuildServiceImpl implements BuildService {
     const index = path.lastIndexOf('.');
     if (index < 0) return '';
 
-    return path.substring(index + 1);
+    return path.substring(index);
   }
 
   private fileChache: Map<string, string> = new Map();
