@@ -50,7 +50,8 @@ class BuildServiceImpl implements BuildService {
     const out = render(template, page);
 
     if (!fs.existsSync(templateRule.outDir)) fs.mkdirSync(templateRule.outDir);
-    fs.writeFileSync(templateRule.outDir + '/' + titleString, out);
+    const outFile = templateRule.outDir + '/' + titleString + this._getFileExtension(templateRule.template);
+    fs.writeFileSync(outFile, out);
   }
 
   private async fetchAllSecondaryDatabases(
