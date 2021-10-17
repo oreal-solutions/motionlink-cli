@@ -11,3 +11,9 @@ export type NotionDatabaseAssociation = {
   notionDatabaseId: string;
   notionIntegrationToken: Token;
 };
+
+// API Models
+
+export type StringResponseBody = {
+  value: string;
+};
