@@ -9,6 +9,12 @@ export type NotionPage = {
   otherData: object;
   data: GetPageResponse;
   blocks: NotionBlock[];
+
+  /**
+   * This value should be retrieved by users in map.
+   * Default is page id.
+   */
+  _title?: string,
 };
 
 export type NotionDatabase = {

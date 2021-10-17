@@ -42,15 +42,11 @@ class BuildServiceImpl implements BuildService {
   }
 
   private async populatePage(templateRule: TemplateRule, page: NotionPage): Promise<void> {
-    const title = page.data.properties.title;
-    let titleString = page.data.id;
-    if (title && title.type === 'title' && title.title.length !== 0) titleString = title.title[0].plain_text;
-
     const template = this.readCacheableStringFile(templateRule.template);
     const out = render(template, page);
 
     if (!fs.existsSync(templateRule.outDir)) fs.mkdirSync(templateRule.outDir);
-    const outFile = templateRule.outDir + '/' + titleString + this._getFileExtension(templateRule.template);
+    const outFile = templateRule.outDir + '/' + page._title + this._getFileExtension(templateRule.template);
     fs.writeFileSync(outFile, out);
   }
 
@@ -111,6 +107,7 @@ class BuildServiceImpl implements BuildService {
         blocks: notionBlocks,
       };
 
+      page._title = page.data.id;
       if (args.databaseRule.map) page = args.databaseRule.map(page, args.context);
       await args.onPostPageMapping(page);
       notionPages.push(page);
