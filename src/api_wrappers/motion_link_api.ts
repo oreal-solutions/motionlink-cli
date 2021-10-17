@@ -24,7 +24,7 @@ export default class MotionLinkApi {
 
     try {
       const response = await axios.post(endpoint, { data: body });
-      return response.data as any;
+      return (response.data as any).data;
     } catch (e) {
       const error = e as AxiosError;
       if (error.response && error.response.status === 500) {
