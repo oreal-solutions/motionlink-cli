@@ -15,18 +15,18 @@ export interface BuildService {
 }
 
 export function newBuildService(): BuildService {
-  return new _BuildService();
+  return new BuildServiceImpl();
 }
 
-class _BuildService implements BuildService {
+class BuildServiceImpl implements BuildService {
   public async build(templateRules: TemplateRule[], databaseAssociations: NotionDatabaseAssociation[]): Promise<void> {
     for (const templateRule of templateRules) {
-      const context: Context = {
+      const ctx: Context = {
         others: [],
         genMarkdownForPage: this.genMarkdownForPage,
       };
 
-      context.others = await this.fetchAllSecondaryDatabases(templateRule.alsoUses, databaseAssociations, context);
+      ctx.others = await this.fetchAllSecondaryDatabases(templateRule.alsoUses, databaseAssociations, ctx);
       const primaryAssociation = this._getDatabaseAssociationForDatabaseRuleAndThrowIfNotExists(
         templateRule.uses,
         databaseAssociations,
@@ -35,7 +35,7 @@ class _BuildService implements BuildService {
       await this.fetchDatabase({
         databaseRule: templateRule.uses,
         association: primaryAssociation,
-        context: context,
+        context: ctx,
         onPostPageMapping: (notionPage) => this.populatePage(templateRule, notionPage),
       });
     }
@@ -54,19 +54,19 @@ class _BuildService implements BuildService {
   private async fetchAllSecondaryDatabases(
     databaseRules: DatabaseRule[],
     databaseAssociations: NotionDatabaseAssociation[],
-    context: Context,
+    ctx: Context,
   ): Promise<NotionDatabase[]> {
     const secondaryDatabases: NotionDatabase[] = [];
-    for (const databaseRule of databaseRules) {
-      const association = this._getDatabaseAssociationForDatabaseRuleAndThrowIfNotExists(
-        databaseRule,
+    for (const dbRule of databaseRules) {
+      const dbAssociation = this._getDatabaseAssociationForDatabaseRuleAndThrowIfNotExists(
+        dbRule,
         databaseAssociations,
       );
       const db = await this.fetchDatabase({
-        databaseRule: databaseRule,
-        association: association,
-        context: context,
-        onPostPageMapping: async (_) => {},
+        databaseRule: dbRule,
+        association: dbAssociation,
+        context: ctx,
+        onPostPageMapping: async (_) => undefined,
       });
 
       secondaryDatabases.push(db);
@@ -86,7 +86,7 @@ class _BuildService implements BuildService {
       withToken: args.association.notionIntegrationToken,
     });
 
-    const pages: NotionPage[] = [];
+    const notionPages: NotionPage[] = [];
     for await (const pageData of NotionService.instance.queryForDatabasePages({
       databaseId: args.association.notionDatabaseId,
       withToken: args.association.notionIntegrationToken,
@@ -94,52 +94,52 @@ class _BuildService implements BuildService {
       sort: args.databaseRule.sort,
       filter: args.databaseRule.filter,
     })) {
-      const blocks: NotionBlock[] = [];
+      const notionBlocks: NotionBlock[] = [];
       for await (const blockData of NotionService.instance.getPageBlocks({
         pageId: pageData.id,
         withToken: args.association.notionIntegrationToken,
       })) {
-        blocks.push(await this.parseBlock(blockData, args.association.notionIntegrationToken));
+        notionBlocks.push(await this.parseBlock(blockData, args.association.notionIntegrationToken));
       }
 
       let page: NotionPage = {
         otherData: {},
         data: pageData,
-        blocks: blocks,
+        blocks: notionBlocks,
       };
 
       if (args.databaseRule.map) page = args.databaseRule.map(page, args.context);
       await args.onPostPageMapping(page);
-      pages.push(page);
+      notionPages.push(page);
     }
 
     return {
-      pages: pages,
+      pages: notionPages,
       data: databaseData,
     };
   }
 
-  private async parseBlock(data: GetBlockResponse, notionToken: Token): Promise<NotionBlock> {
-    if (data.has_children) {
+  private async parseBlock(blockData: GetBlockResponse, notionToken: Token): Promise<NotionBlock> {
+    if (blockData.has_children) {
       return {
-        data: data,
-        children: await this.getBlockChildren(data.id, notionToken),
+        data: blockData,
+        children: await this.getBlockChildren(blockData.id, notionToken),
       };
     } else {
       return {
-        data: data,
+        data: blockData,
         children: [],
       };
     }
   }
 
-  private async getBlockChildren(blockId: string, withToken: Token): Promise<NotionBlock[]> {
+  private async getBlockChildren(pageBlockId: string, token: Token): Promise<NotionBlock[]> {
     const children: NotionBlock[] = [];
     for await (const child of NotionService.instance.getBlockChildren({
-      blockId: blockId,
-      withToken: withToken,
+      blockId: pageBlockId,
+      withToken: token,
     })) {
-      children.push(await this.parseBlock(child, withToken));
+      children.push(await this.parseBlock(child, token));
     }
 
     return children;

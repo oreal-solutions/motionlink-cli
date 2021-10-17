@@ -23,7 +23,7 @@ export default class NotionService {
   }): AsyncGenerator<GetPageResponse, void, undefined> {
     const notion = this.initNotionClient(args.withToken);
     let hasMore = true;
-    let nextCursor: string | undefined = undefined;
+    let nextCursor: string | undefined;
 
     while (hasMore) {
       const response = await resultOf(() =>
@@ -55,7 +55,7 @@ export default class NotionService {
   }): AsyncGenerator<GetBlockResponse, void, undefined> {
     const notion = this.initNotionClient(args.withToken);
     let hasMore = true;
-    let nextCursor: string | undefined = undefined;
+    let nextCursor: string | undefined;
 
     while (hasMore) {
       const response = await resultOf(() =>

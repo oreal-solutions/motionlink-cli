@@ -54,7 +54,7 @@ describe('BuildService tests', () => {
     });
 
     it("Should return empty string when given 'abc'", () => {
-      expect(newBuildService()._getFileExtension('abc')).to.be.empty;
+      return expect(newBuildService()._getFileExtension('abc')).to.be.empty;
     });
   });
 });

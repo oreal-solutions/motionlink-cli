@@ -21,7 +21,7 @@ export type Context = {
   genMarkdownForPage: (notionPage: NotionPage) => string;
 };
 
-export type SortsParams = Array<
+type T =
   | {
       property: string;
       direction: 'ascending' | 'descending';
@@ -29,8 +29,9 @@ export type SortsParams = Array<
   | {
       timestamp: 'created_time' | 'last_edited_time';
       direction: 'ascending' | 'descending';
-    }
->;
+    };
+
+export type SortsParams = T[];
 
 export type DatabaseRule = {
   database: string;
