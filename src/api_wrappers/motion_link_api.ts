@@ -1,5 +1,5 @@
 import { StringResponseBody, Token } from '../models/app_models';
-import axios from "axios";
+import axios, { AxiosError } from 'axios';
 
 export default class MotionLinkApi {
   public getNotionTokenForLink(linkAccessKey: string): Promise<Token> {
@@ -21,10 +21,18 @@ export default class MotionLinkApi {
 
   private async callHttpFunction(name: string, body: object): Promise<any> {
     const endpoint = `https://us-central1-motionlink-aec23.cloudfunctions.net/cli_tool_service-api/${name}`;
-    const response = await axios.post(endpoint, body);
 
-    if (response.status !== 200) throw new Error(`${response.data}`);
-    return (await response.data) as any;
+    try {
+      const response = await axios.post(endpoint, body);
+      return response.data as any;
+    } catch (e) {
+      const error = e as AxiosError;
+      if (error.response) {
+        throw new Error(`${error.response.data}`);
+      } else {
+        throw e;
+      }
+    }
   }
 
   private static _instance: MotionLinkApi;
