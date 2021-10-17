@@ -1,3 +1,5 @@
 node_modules
 /lib
-example
+
+# Public folder in example
+public
