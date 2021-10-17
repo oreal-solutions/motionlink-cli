@@ -3,7 +3,7 @@ import { NotionDatabaseAssociation, Token } from '../models/app_models';
 import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, TemplateRule } from '../models/config_models';
 import { render } from 'mustache';
 import NotionService from './notion_service';
-import fs = require('fs');
+import * as fs from 'fs';
 
 export interface BuildService {
   build: (templateRules: TemplateRule[], databaseAssociations: NotionDatabaseAssociation[]) => Promise<void>;
