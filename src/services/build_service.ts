@@ -44,11 +44,11 @@ class BuildServiceImpl implements BuildService {
   private async populatePage(templateRule: TemplateRule, page: NotionPage): Promise<void> {
     const title = page.data.properties.title;
     let titleString = page.data.id;
-    if (title.type === 'title' && title.title.length !== 0) titleString = title.title[0].plain_text;
+    if (title && title.type === 'title' && title.title.length !== 0) titleString = title.title[0].plain_text;
 
     const template = this.readCacheableStringFile(templateRule.template);
     const out = render(template, page);
-    fs.writeFileSync(titleString, out);
+    fs.writeFileSync(templateRule.outDir + '/' + titleString, out);
   }
 
   private async fetchAllSecondaryDatabases(

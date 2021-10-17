@@ -47,6 +47,7 @@ export type DatabaseRule = {
 
 export type TemplateRule = {
   template: string;
+  outDir: string;
   uses: DatabaseRule;
   alsoUses: DatabaseRule[];
 };
