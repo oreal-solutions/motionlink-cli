@@ -23,7 +23,8 @@ export type NotionDatabase = {
 };
 
 export type Context = {
-  others: NotionDatabase[];
+  // Object of other Notiondatabase objects
+  others: object;
   genMarkdownForPage: (notionPage: NotionPage) => string;
 };
 

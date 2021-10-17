@@ -54,8 +54,9 @@ class BuildServiceImpl implements BuildService {
     databaseRules: DatabaseRule[],
     databaseAssociations: NotionDatabaseAssociation[],
     ctx: Context,
-  ): Promise<NotionDatabase[]> {
-    const secondaryDatabases: NotionDatabase[] = [];
+  ): Promise<object> {
+    const others: any = {};
+
     for (const dbRule of databaseRules) {
       const dbAssociation = this._getDatabaseAssociationForDatabaseRuleAndThrowIfNotExists(
         dbRule,
@@ -68,10 +69,10 @@ class BuildServiceImpl implements BuildService {
         onPostPageMapping: async (_) => undefined,
       });
 
-      secondaryDatabases.push(db);
+      others[dbRule.database] = db;
     }
 
-    return secondaryDatabases;
+    return others;
   }
 
   private async fetchDatabase(args: {
