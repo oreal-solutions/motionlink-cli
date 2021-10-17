@@ -23,7 +23,7 @@ export default class MotionLinkApi {
     const endpoint = `https://us-central1-motionlink-aec23.cloudfunctions.net/cli_tool_service-api/${name}`;
 
     try {
-      const response = await axios.post(endpoint, body);
+      const response = await axios.post(endpoint, { data: body });
       return response.data as any;
     } catch (e) {
       const error = e as AxiosError;
