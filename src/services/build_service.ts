@@ -48,6 +48,8 @@ class BuildServiceImpl implements BuildService {
 
     const template = this.readCacheableStringFile(templateRule.template);
     const out = render(template, page);
+
+    if (!fs.existsSync(templateRule.outDir)) fs.mkdirSync(templateRule.outDir);
     fs.writeFileSync(templateRule.outDir + '/' + titleString, out);
   }
 
