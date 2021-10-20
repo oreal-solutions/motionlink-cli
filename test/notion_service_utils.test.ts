@@ -10,7 +10,7 @@ describe('service_utils tests', () => {
       expect(await resultOf(() => promise)).to.equal('abc');
     });
 
-    describe('When the passed clojure throws Notion API rate limit error', () => {
+    describe('When the passed closure throws Notion API rate limit error', () => {
       it('should sleep for 333 milliseconds', async () => {
         const before = Date.now();
         let count = 0;
@@ -27,7 +27,7 @@ describe('service_utils tests', () => {
         expect(diff).to.be.greaterThan(333).but.lessThan(400);
       });
 
-      it('Should return the value the passed clojure eventually returns', async () => {
+      it('Should return the value the passed closure eventually returns', async () => {
         let count = 0;
 
         const ret = await resultOf(() => {
@@ -42,7 +42,7 @@ describe('service_utils tests', () => {
       });
     });
 
-    describe('When the passed clojure throws an error that is NOT a Notion API rate limit error', () => {
+    describe('When the passed closure throws an error that is NOT a Notion API rate limit error', () => {
       it('Should rethrow the error', async () => {
         let thrownError: any;
 
