@@ -23,6 +23,7 @@ export default class NotionService {
     sort?: SortsParams;
     filter?: object;
   }): AsyncGenerator<GetPageResponse, void, undefined> {
+    // TODO: Unit test the logic here.
     const notion = this.initNotionClient(args.withToken);
     let pagesToReadCount = ALL;
     if (args.takeOnly !== undefined) pagesToReadCount = args.takeOnly;
@@ -56,6 +57,7 @@ export default class NotionService {
     yield* readPages;
   }
 
+  // TODO: Remove in favor of getBlockChildren
   public getPageBlocks(args: { pageId: string; withToken: Token }): AsyncGenerator<GetBlockResponse, void, undefined> {
     return this.getBlockChildren({
       blockId: args.pageId,
@@ -67,6 +69,7 @@ export default class NotionService {
     blockId: string;
     withToken: Token;
   }): AsyncGenerator<GetBlockResponse, void, undefined> {
+    // TODO: Unit test the logic here
     const notion = this.initNotionClient(args.withToken);
     let hasMore = true;
     let nextCursor: string | undefined;
@@ -94,5 +97,9 @@ export default class NotionService {
   private static _instance: NotionService;
   public static get instance(): NotionService {
     return this._instance ?? (this._instance = new NotionService());
+  }
+
+  public static setMockedInstance(instance: NotionService) {
+    this._instance = instance;
   }
 }
