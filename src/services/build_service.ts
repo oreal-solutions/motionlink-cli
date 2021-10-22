@@ -274,11 +274,19 @@ export class DatabaseFetcher {
         args.association.notionIntegrationToken,
       );
 
-      outPages.push({
+      let page: NotionPage = {
+        _title: pageData.id,
         otherData: {},
         data: pageData,
         blocks: pageBlocks,
-      });
+      };
+
+      if (args.databaseRule.map) {
+        page = args.databaseRule.map(page, args.context);
+      }
+
+      args.onPostPageMapping(page);
+      outPages.push(page);
     }
 
     return {

@@ -1,6 +1,6 @@
 import { describe, it, setup } from 'mocha';
 import { expect } from 'chai';
-import { DatabaseRule, NotionBlock, NotionPage } from '../src/models/config_models';
+import { Context, DatabaseRule, NotionBlock, NotionPage } from '../src/models/config_models';
 import { NotionDatabaseAssociation, Token } from '../src/models/app_models';
 import {
   BlockChildrenFetcher,
@@ -474,46 +474,184 @@ describe('DatabaseFetcher tests', () => {
       });
     });
 
-    it('Should return database pages with their blocks as returned by the set BlockChildrenFetcher', async () => {
-      const returnedDb = await instance.fetchDatabase(fetchDb2Args);
-
-      expect(returnedDb.pages).to.deep.equal([
-        {
-          otherData: {},
-          data: {
-            id: 'page-1',
-          },
-          blocks: [],
-        },
-        {
-          otherData: {},
-          data: {
-            id: 'page-2',
-          },
-          blocks: [
-            {
-              data: {
-                id: '',
-                has_children: false,
-              },
-              children: [],
-            },
-          ],
-        },
-      ]);
-    });
-
     describe('For each page yielded by NotionService.instance.queryForDatabasePages', () => {
       describe('When the given databaseRule does have a databaseRule.map closure', () => {
-        it('Should pass the page object to the databaseRule.map closure with its blocks already set', () => {});
-        it('Should set the page._title to the page id when the databaseRule.map closure does not set it', () => {});
-        it('Should set the page to that returned by the databaseRule.map closure', () => {});
-        it('Should call the passed onPostPageMapping with the page returned by the databaseRule.map closure', () => {});
+        it('Should pass the page object to the databaseRule.map closure with its blocks already set and page._title equal to page id', async () => {
+          const mappedPages: NotionPage[] = [];
+
+          const fetchArgs = {
+            databaseRule: {
+              database: 'efg',
+              map: (page: NotionPage, _: Context) => {
+                mappedPages.push(page);
+                return page;
+              },
+            },
+            association: {
+              name: 'efg',
+              notionDatabaseId: 'db-2',
+              notionIntegrationToken: {} as Token,
+            },
+            context: {
+              others: {},
+              genMarkdownForPage: (_: NotionPage) => '',
+            },
+            onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
+          };
+
+          await instance.fetchDatabase(fetchArgs);
+          expect(mappedPages).to.deep.equal([
+            {
+              _title: 'page-1',
+              otherData: {},
+              data: {
+                id: 'page-1',
+              },
+              blocks: [],
+            },
+            {
+              _title: 'page-2',
+              otherData: {},
+              data: {
+                id: 'page-2',
+              },
+              blocks: [
+                {
+                  data: {
+                    id: '',
+                    has_children: false,
+                  },
+                  children: [],
+                },
+              ],
+            },
+          ]);
+        });
+
+        it('Should set the page._title to the page id when the databaseRule.map closure does not set it', async () => {
+          const database = await instance.fetchDatabase(fetchDb2Args);
+          expect(database.pages[0]._title).to.equal('page-1');
+          expect(database.pages[1]._title).to.equal('page-2');
+        });
+
+        it('Should set the page to that returned by the databaseRule.map closure', async () => {
+          const fetchArgs = {
+            databaseRule: {
+              database: 'efg',
+              map: (page: NotionPage, _: Context) => {
+                const testObject = {
+                  abc: page.data.id,
+                };
+                return testObject as any;
+              },
+            },
+            association: {
+              name: 'efg',
+              notionDatabaseId: 'db-2',
+              notionIntegrationToken: {} as Token,
+            },
+            context: {
+              others: {},
+              genMarkdownForPage: (_: NotionPage) => '',
+            },
+            onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
+          };
+
+          const database = await instance.fetchDatabase(fetchArgs);
+          expect(database.pages[0]).to.deep.equal({ abc: 'page-1' });
+          expect(database.pages[1]).to.deep.equal({ abc: 'page-2' });
+        });
+
+        it('Should call the passed onPostPageMapping with the page returned by the databaseRule.map closure', async () => {
+          const postMappedPages: NotionPage[] = [];
+
+          const fetchArgs = {
+            databaseRule: {
+              database: 'efg',
+              map: (page: NotionPage, _: Context) => {
+                const testObject = {
+                  abc: page.data.id,
+                };
+                return testObject as any;
+              },
+            },
+            association: {
+              name: 'efg',
+              notionDatabaseId: 'db-2',
+              notionIntegrationToken: {} as Token,
+            },
+            context: {
+              others: {},
+              genMarkdownForPage: (_: NotionPage) => '',
+            },
+            onPostPageMapping: (page: NotionPage) => {
+              postMappedPages.push(page);
+              return new Promise<NotionPage>((resolve, _) => resolve(page));
+            },
+          };
+
+          await instance.fetchDatabase(fetchArgs);
+          expect(postMappedPages).to.deep.equal([{ abc: 'page-1' }, { abc: 'page-2' }]);
+        });
       });
 
       describe('When the given databaseRule does NOT have a databaseRule.map closure', () => {
-        it('Should set the page._title field of a page to its id', () => {});
-        it('Should call the passed onPostPageMapping closure with the page object', () => {});
+        it('Should set the page._title field of a page to its id', async () => {
+          const database = await instance.fetchDatabase(fetchDb2Args);
+          expect(database.pages[0]._title).to.equal('page-1');
+          expect(database.pages[1]._title).to.equal('page-2');
+        });
+
+        it('Should call the passed onPostPageMapping closure with the page object', async () => {
+          const postMappedPages: NotionPage[] = [];
+
+          const fetchArgs = {
+            databaseRule: {
+              database: 'efg',
+            },
+            association: {
+              name: 'efg',
+              notionDatabaseId: 'db-2',
+              notionIntegrationToken: {} as Token,
+            },
+            context: {
+              others: {},
+              genMarkdownForPage: (_: NotionPage) => '',
+            },
+            onPostPageMapping: (page: NotionPage) => {
+              postMappedPages.push(page);
+              return new Promise<NotionPage>((resolve, _) => resolve(page));
+            },
+          };
+
+          await instance.fetchDatabase(fetchArgs);
+          expect(postMappedPages).to.deep.equal([
+            {
+              _title: 'page-1',
+              otherData: {},
+              data: {
+                id: 'page-1',
+              },
+              blocks: [],
+            },
+            {
+              _title: 'page-2',
+              otherData: {},
+              data: {
+                id: 'page-2',
+              },
+              blocks: [
+                {
+                  data: {
+                    id: '',
+                    has_children: false,
+                  },
+                  children: [],
+                },
+              ],
+            },
+          ]);
+        });
       });
     });
   });
