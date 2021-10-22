@@ -1,10 +1,11 @@
 import { GetBlockResponse, GetDatabaseResponse, GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionDatabaseAssociation, Token } from '../src/models/app_models';
-import { DatabaseRule, NotionBlock, SortsParams } from '../src/models/config_models';
+import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, SortsParams } from '../src/models/config_models';
 import {
   BlockChildrenFetcher,
   CachingFileReader,
   DatabaseAssociationFinder,
+  DatabaseFetcher,
   FileExtensionFinder,
 } from '../src/services/build_service';
 import FileSystemService from '../src/services/file_system_service';
@@ -60,4 +61,15 @@ export function asMockedBlockChildrenFetcher(mock: {
   fetchChildren: (blockId: string, notionToken: Token) => Promise<NotionBlock[]>;
 }) {
   return mock as BlockChildrenFetcher;
+}
+
+export function asMockedDatabaseFetcher(mock: {
+  fetchDatabase: (args: {
+    databaseRule: DatabaseRule;
+    association: NotionDatabaseAssociation;
+    context: Context;
+    onPostPageMapping: (notionPage: NotionPage) => Promise<NotionPage>;
+  }) => Promise<NotionDatabase>;
+}) {
+  return mock as DatabaseFetcher;
 }

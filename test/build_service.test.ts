@@ -8,11 +8,14 @@ import {
   DatabaseAssociationFinder,
   DatabaseFetcher,
   FileExtensionFinder,
+  SecondaryDatabasesFetcher,
   TemplateRuleOutputWriter,
 } from '../src/services/build_service';
 import {
   asMockedBlockChildrenFetcher,
   asMockedCachingFileReader,
+  asMockedDatabaseAssociationFinder,
+  asMockedDatabaseFetcher,
   asMockedFileExtensionFinder,
   setMockedFileSystemService,
   setMockedMustacheService,
@@ -659,7 +662,45 @@ describe('DatabaseFetcher tests', () => {
 
 describe('SecondaryDatabasesFetcher tests', () => {
   describe('fetchAll(databaseRules, databaseAssociations, ctx)', () => {
-    it('Should have all the secondary databases for all the given rules in the returned object', () => {});
+    let instance: SecondaryDatabasesFetcher;
+    setup(() => {
+      instance = new SecondaryDatabasesFetcher();
+
+      const notionDatabases = {
+        'db-1_notion': { abc: 'db-1' },
+        'db-2_notion': { abc: 'db-2' },
+      };
+
+      instance.setDatabaseFetcher(
+        asMockedDatabaseFetcher({
+          fetchDatabase: (args) => {
+            const ret = (notionDatabases as any)[args.association.notionDatabaseId];
+            return new Promise((resolve, _) => resolve(ret));
+          },
+        }),
+      );
+
+      instance.setDatabaseAssociationFinder(
+        asMockedDatabaseAssociationFinder({
+          findDatabaseAssociationFor: (rule, _) => {
+            return {
+              name: rule.database,
+              notionDatabaseId: `${rule.database}_notion`,
+              notionIntegrationToken: {} as any,
+            };
+          },
+        }),
+      );
+    });
+    it('Should have all the secondary databases for all the given rules in the returned object', async () => {
+      const databaseRules: DatabaseRule[] = [{ database: 'db-1' }, { database: 'db-2' }];
+      const secondaryDatabases = await instance.fetchAll(databaseRules, [], {} as any);
+
+      expect(secondaryDatabases).to.deep.equal({
+        'db-1': { abc: 'db-1' },
+        'db-2': { abc: 'db-2' },
+      });
+    });
   });
 });
 

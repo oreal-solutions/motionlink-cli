@@ -308,11 +308,34 @@ export class SecondaryDatabasesFetcher {
     databaseAssociations: NotionDatabaseAssociation[],
     ctx: Context,
   ): Promise<object> {
-    return {};
+    const others: any = {};
+
+    for (const dbRule of databaseRules) {
+      const dbAssociation = this.databaseAssociationFinder!.findDatabaseAssociationFor(dbRule, databaseAssociations);
+
+      const db = await this.databaseFetcher!.fetchDatabase({
+        databaseRule: dbRule,
+        association: dbAssociation,
+        context: ctx,
+        onPostPageMapping: async (_) => ({} as any),
+      });
+
+      others[dbRule.database] = db;
+    }
+
+    return others;
   }
 
-  public setDatabaseFetcher(databaseFetcher: DatabaseFetcher) {}
-  public setDatabaseAssociationFinder(finder: DatabaseAssociationFinder) {}
+  public setDatabaseFetcher(databaseFetcher: DatabaseFetcher) {
+    this.databaseFetcher = databaseFetcher;
+  }
+
+  public setDatabaseAssociationFinder(finder: DatabaseAssociationFinder) {
+    this.databaseAssociationFinder = finder;
+  }
+
+  private databaseFetcher: DatabaseFetcher | undefined;
+  private databaseAssociationFinder: DatabaseAssociationFinder | undefined;
 }
 
 export class TemplateRuleBuilder {
