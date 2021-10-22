@@ -1,6 +1,8 @@
+import { render } from 'mustache';
+
 export default class MustacheService {
   public render(view: object, template: string): string {
-    return '';
+    return render(template, view);
   }
 
   private static _instance: MustacheService;

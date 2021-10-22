@@ -703,19 +703,3 @@ describe('SecondaryDatabasesFetcher tests', () => {
     });
   });
 });
-
-describe('TemplateRuleBuilder tests', () => {
-  describe('build(templateRule, databaseAssociations)', () => {
-    describe('Call to passed DatabaseFetcher', () => {
-      describe('onPostPageMapping callback', () => {
-        it('Should populate the given page using the passed TemplateRuleOutputWriter', () => {});
-      });
-    });
-
-    describe('Context passed SecondaryDatabasesFetcher', () => {
-      describe('genPageMarkdown', () => {
-        it('Should return page markdown as the returned by the MarkdownService for the page', () => {});
-      });
-    });
-  });
-});

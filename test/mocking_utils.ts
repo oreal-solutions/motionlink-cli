@@ -1,12 +1,22 @@
 import { GetBlockResponse, GetDatabaseResponse, GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionDatabaseAssociation, Token } from '../src/models/app_models';
-import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, SortsParams } from '../src/models/config_models';
+import {
+  Context,
+  DatabaseRule,
+  NotionBlock,
+  NotionDatabase,
+  NotionPage,
+  SortsParams,
+  TemplateRule,
+} from '../src/models/config_models';
 import {
   BlockChildrenFetcher,
   CachingFileReader,
   DatabaseAssociationFinder,
   DatabaseFetcher,
   FileExtensionFinder,
+  SecondaryDatabasesFetcher,
+  TemplateRuleOutputWriter,
 } from '../src/services/build_service';
 import FileSystemService from '../src/services/file_system_service';
 import MustacheService from '../src/services/mustache_service';
@@ -72,4 +82,20 @@ export function asMockedDatabaseFetcher(mock: {
   }) => Promise<NotionDatabase>;
 }) {
   return mock as DatabaseFetcher;
+}
+
+export function asMockedSecondaryDatabaseFetcher(mock: {
+  fetchAll: (
+    databaseRules: DatabaseRule[],
+    databaseAssociations: NotionDatabaseAssociation[],
+    ctx: Context,
+  ) => Promise<object>;
+}) {
+  return mock as SecondaryDatabasesFetcher;
+}
+
+export function asMockedTemplateRuleOutputWriter(mock: {
+  write: (page: NotionPage, pageTemplateRule: TemplateRule) => Promise<void>;
+}) {
+  return mock as TemplateRuleOutputWriter;
 }
