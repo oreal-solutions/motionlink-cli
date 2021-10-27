@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import { APIErrorCode } from '@notionhq/client/build/src';
-import { resultOf } from '../src/services/notion_service_utils';
+import { resultOf } from '../src/services/notion_service';
 
 describe('service_utils tests', () => {
   describe('_resultOf', () => {

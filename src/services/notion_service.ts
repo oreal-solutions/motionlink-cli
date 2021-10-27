@@ -2,7 +2,7 @@ import { Client } from '@notionhq/client';
 import { GetBlockResponse, GetDatabaseResponse, GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Token } from '../models/app_models';
 import { SortsParams } from '../models/config_models';
-import { resultOf } from './notion_service_utils';
+import { APIErrorCode } from '@notionhq/client/build/src';
 
 const ALL = Number.POSITIVE_INFINITY;
 
@@ -101,5 +101,26 @@ export default class NotionService {
 
   public static setMockedInstance(instance: NotionService) {
     this._instance = instance;
+  }
+}
+
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const allowedNotionApiCallsPerSecond = 3;
+const sleepTimeInMillis = 1000/allowedNotionApiCallsPerSecond;
+
+export async function resultOf<T>(notionCall: () => Promise<T>): Promise<T> {
+  try {
+    return await notionCall();
+  } catch (e) {
+    if ((e as any).status === APIErrorCode.RateLimited) {
+      await sleep(sleepTimeInMillis);
+      return resultOf(notionCall);
+    }
+
+    throw e;
   }
 }
