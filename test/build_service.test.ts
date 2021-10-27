@@ -333,6 +333,7 @@ describe('DatabaseFetcher tests', () => {
   const fetchDb1Args = {
     databaseRule: {
       database: 'abc',
+      fetchBlocks: true,
       takeOnly: 5,
       sort: { sort: 'xxx' } as any,
       filter: { filter: 'yyy' },
@@ -352,6 +353,7 @@ describe('DatabaseFetcher tests', () => {
   const fetchDb2Args = {
     databaseRule: {
       database: 'efg',
+      fetchBlocks: true,
     },
     association: {
       name: 'efg',
@@ -478,6 +480,106 @@ describe('DatabaseFetcher tests', () => {
     });
 
     describe('For each page yielded by NotionService.instance.queryForDatabasePages', () => {
+      async function testDoesNotFetchBlocks(fetchBlocksValue: boolean | undefined) {
+        const fetchArgs = {
+          databaseRule: {
+            database: 'efg',
+            fetchBlocks: fetchBlocksValue,
+          },
+          association: {
+            name: 'efg',
+            notionDatabaseId: 'db-2',
+            notionIntegrationToken: {} as Token,
+          },
+          context: {
+            others: {},
+            genMarkdownForPage: (_: NotionPage) => '',
+          },
+          onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
+        };
+
+        const database = await instance.fetchDatabase(fetchArgs);
+        expect(database.pages).to.deep.equal([
+          {
+            _title: 'page-1',
+            otherData: {},
+            data: {
+              id: 'page-1',
+            },
+            blocks: [],
+          },
+          {
+            _title: 'page-2',
+            otherData: {},
+            data: {
+              id: 'page-2',
+            },
+            blocks: [],
+          },
+        ]);
+      }
+
+      describe('When the databaseRule.fetchBlocks is undefined', () => {
+        it('Should NOT fetch page blocks', () => {
+          return testDoesNotFetchBlocks(undefined);
+        });
+      });
+
+      describe('When the databaseRule.fetchBlocks is false', () => {
+        it('Should NOT fetch page blocks', () => {
+          return testDoesNotFetchBlocks(false);
+        });
+      });
+
+      describe('When the databaseRule.fetchBlocks is true', () => {
+        it('Should fetch page blocks', async () => {
+          const fetchArgs = {
+            databaseRule: {
+              database: 'efg',
+              fetchBlocks: true,
+            },
+            association: {
+              name: 'efg',
+              notionDatabaseId: 'db-2',
+              notionIntegrationToken: {} as Token,
+            },
+            context: {
+              others: {},
+              genMarkdownForPage: (_: NotionPage) => '',
+            },
+            onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
+          };
+
+          const database = await instance.fetchDatabase(fetchArgs);
+          expect(database.pages).to.deep.equal([
+            {
+              _title: 'page-1',
+              otherData: {},
+              data: {
+                id: 'page-1',
+              },
+              blocks: [],
+            },
+            {
+              _title: 'page-2',
+              otherData: {},
+              data: {
+                id: 'page-2',
+              },
+              blocks: [
+                {
+                  data: {
+                    id: '',
+                    has_children: false,
+                  },
+                  children: [],
+                },
+              ],
+            },
+          ]);
+        });
+      });
+
       describe('When the given databaseRule does have a databaseRule.map closure', () => {
         it('Should pass the page object to the databaseRule.map closure with its blocks already set and page._title equal to page id', async () => {
           const mappedPages: NotionPage[] = [];
@@ -485,6 +587,7 @@ describe('DatabaseFetcher tests', () => {
           const fetchArgs = {
             databaseRule: {
               database: 'efg',
+              fetchBlocks: true,
               map: (page: NotionPage, _: Context) => {
                 mappedPages.push(page);
                 return page;
@@ -611,6 +714,7 @@ describe('DatabaseFetcher tests', () => {
           const fetchArgs = {
             databaseRule: {
               database: 'efg',
+              fetchBlocks: true,
             },
             association: {
               name: 'efg',

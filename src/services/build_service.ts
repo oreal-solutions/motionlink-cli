@@ -159,10 +159,13 @@ export class DatabaseFetcher {
     });
 
     for await (const pageData of pagesData) {
-      const pageBlocks = await this.blockChildrenFetcher!.fetchChildren(
-        pageData.id,
-        args.association.notionIntegrationToken,
-      );
+      let pageBlocks: NotionBlock[] = [];
+      if (Boolean(args.databaseRule.fetchBlocks)) {
+        pageBlocks = await this.blockChildrenFetcher!.fetchChildren(
+          pageData.id,
+          args.association.notionIntegrationToken,
+        );
+      }
 
       let page: NotionPage = {
         _title: pageData.id,

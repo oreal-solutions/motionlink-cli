@@ -42,6 +42,7 @@ export type SortsParams = T[];
 
 export type DatabaseRule = {
   database: string;
+  fetchBlocks?: boolean;
   takeOnly?: number;
   map?: (notionPage: NotionPage, context: Context) => NotionPage;
   sort?: SortsParams;
