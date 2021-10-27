@@ -110,10 +110,10 @@ export class TemplateRuleOutputWriter {
 }
 
 export class BlockChildrenFetcher {
-  public async fetchChildren(blockId: string, notionToken: Token): Promise<NotionBlock[]> {
+  public async fetchChildren(bId: string, notionToken: Token): Promise<NotionBlock[]> {
     const children: NotionBlock[] = [];
     for await (const child of NotionService.instance.getBlockChildren({
-      blockId: blockId,
+      blockId: bId,
       withToken: notionToken,
     })) {
       children.push(await this._parseBlock(child, notionToken));

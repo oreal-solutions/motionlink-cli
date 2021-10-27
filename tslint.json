@@ -2,6 +2,7 @@
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
     "no-console": false,
-    "class-name": [true, "allow-leading-underscore"]
+    "class-name": [true, "allow-leading-underscore"],
+    "max-classes-per-file": [true, 100, "exclude-class-expressions"]
   }
 }
