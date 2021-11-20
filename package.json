@@ -1,6 +1,6 @@
 {
   "name": "motionlink-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Making it easy to use Notion as a Content Management system for personal websites, portfolios, blogs, business homepages, and other kinds of static websites.",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
