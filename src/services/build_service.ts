@@ -188,11 +188,11 @@ export class DatabaseFetcher {
       promises.push(fetchPage(pageData));
     }
 
-    const pages = await Promise.all(promises);
+    const outPages = await Promise.all(promises);
 
     return {
       data: database,
-      pages: pages,
+      pages: outPages,
     };
   }
 
