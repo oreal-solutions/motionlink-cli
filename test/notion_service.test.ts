@@ -24,7 +24,7 @@ describe('service_utils tests', () => {
         });
 
         const diff = Date.now() - before;
-        expect(diff).to.be.greaterThan(333).but.lessThan(400);
+        expect(diff).to.be.greaterThanOrEqual(333).but.lessThan(400);
       });
 
       it('Should return the value the passed closure eventually returns', async () => {
