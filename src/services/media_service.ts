@@ -56,7 +56,6 @@ export class MediaDestinationController {
   }
 
   public makeFileDestinationForAssetWithUrl(url: string): string {
-    this.templateRule.alsoUses;
     const subfolderName = this.getSubfolderNameForUrl(url);
     const filename = this.getUrlBasename(url);
     return `${this.templateRule.outDir}/${subfolderName}/${filename}`;
