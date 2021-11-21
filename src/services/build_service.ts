@@ -1,4 +1,4 @@
-import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
+import { GetBlockResponse, GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionDatabaseAssociation, Token } from '../models/app_models';
 import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, TemplateRule } from '../models/config_models';
 import NotionService from './notion_service';
@@ -112,15 +112,15 @@ export class TemplateRuleOutputWriter {
 
 export class BlockChildrenFetcher {
   public async fetchChildren(bId: string, notionToken: Token): Promise<NotionBlock[]> {
-    const children: NotionBlock[] = [];
+    const promises = new Array<Promise<NotionBlock>>();
     for await (const child of NotionService.instance.getBlockChildren({
       blockId: bId,
       withToken: notionToken,
     })) {
-      children.push(await this._parseBlock(child, notionToken));
+      promises.push(this._parseBlock(child, notionToken));
     }
 
-    return children;
+    return Promise.all(promises);
   }
 
   private async _parseBlock(blockData: GetBlockResponse, notionToken: Token): Promise<NotionBlock> {
@@ -150,7 +150,6 @@ export class DatabaseFetcher {
       withToken: args.association.notionIntegrationToken,
     });
 
-    const outPages: NotionPage[] = [];
     const pagesData = NotionService.instance.queryForDatabasePages({
       databaseId: args.association.notionDatabaseId,
       withToken: args.association.notionIntegrationToken,
@@ -159,7 +158,9 @@ export class DatabaseFetcher {
       filter: args.databaseRule.filter,
     });
 
-    for await (const pageData of pagesData) {
+    const promises = new Array<Promise<NotionPage>>();
+
+    const fetchPage = async (pageData: GetPageResponse): Promise<NotionPage> => {
       let pageBlocks: NotionBlock[] = [];
       if (Boolean(args.databaseRule.fetchBlocks)) {
         pageBlocks = await this.blockChildrenFetcher!.fetchChildren(
@@ -179,13 +180,19 @@ export class DatabaseFetcher {
         page = args.databaseRule.map(page, args.context);
       }
 
-      args.onPostPageMapping(page);
-      outPages.push(page);
+      await args.onPostPageMapping(page);
+      return page;
+    };
+
+    for await (const pageData of pagesData) {
+      promises.push(fetchPage(pageData));
     }
+
+    const pages = await Promise.all(promises);
 
     return {
       data: database,
-      pages: outPages,
+      pages: pages,
     };
   }
 
@@ -204,18 +211,32 @@ export class SecondaryDatabasesFetcher {
     ctx: Context,
   ): Promise<object> {
     const others: any = {};
+    const promises = new Array<Promise<{ rule: DatabaseRule; db: NotionDatabase }>>();
 
     for (const dbRule of databaseRules) {
       const dbAssociation = this.databaseAssociationFinder!.findDatabaseAssociationFor(dbRule, databaseAssociations);
 
-      const db = await this.databaseFetcher!.fetchDatabase({
-        databaseRule: dbRule,
-        association: dbAssociation,
-        context: ctx,
-        onPostPageMapping: async (_) => ({} as any),
-      });
+      promises.push(
+        new Promise((resolve, reject) => {
+          this.databaseFetcher!.fetchDatabase({
+            databaseRule: dbRule,
+            association: dbAssociation,
+            context: ctx,
+            onPostPageMapping: async (_) => ({} as any),
+          })
+            .then((database) =>
+              resolve({
+                rule: dbRule,
+                db: database,
+              }),
+            )
+            .catch((e) => reject(e));
+        }),
+      );
+    }
 
-      others[dbRule.database] = db;
+    for (const value of await Promise.all(promises)) {
+      others[value.rule.database] = value.db;
     }
 
     return others;
