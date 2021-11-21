@@ -15,7 +15,9 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
     "prebuild": "npm run clean",
-    "clean": "rimraf lib/"
+    "clean": "rimraf lib/",
+    "publishLatest": "npm publish",
+    "publishNext": "npm publish --tag next"
   },
   "repository": {
     "type": "git",
