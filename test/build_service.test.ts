@@ -346,6 +346,7 @@ describe('DatabaseFetcher tests', () => {
     context: {
       others: {},
       genMarkdownForPage: (_: NotionPage) => '',
+      fetchMedia: (mediaUrl: string) => '',
     },
     onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
   };
@@ -363,6 +364,7 @@ describe('DatabaseFetcher tests', () => {
     context: {
       others: {},
       genMarkdownForPage: (_: NotionPage) => '',
+      fetchMedia: (mediaUrl: string) => '',
     },
     onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
   };
@@ -494,6 +496,7 @@ describe('DatabaseFetcher tests', () => {
           context: {
             others: {},
             genMarkdownForPage: (_: NotionPage) => '',
+            fetchMedia: (mediaUrl: string) => '',
           },
           onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
         };
@@ -546,6 +549,7 @@ describe('DatabaseFetcher tests', () => {
             context: {
               others: {},
               genMarkdownForPage: (_: NotionPage) => '',
+              fetchMedia: (mediaUrl: string) => '',
             },
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
@@ -601,6 +605,7 @@ describe('DatabaseFetcher tests', () => {
             context: {
               others: {},
               genMarkdownForPage: (_: NotionPage) => '',
+              fetchMedia: (mediaUrl: string) => '',
             },
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
@@ -659,6 +664,7 @@ describe('DatabaseFetcher tests', () => {
             context: {
               others: {},
               genMarkdownForPage: (_: NotionPage) => '',
+              fetchMedia: (mediaUrl: string) => '',
             },
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
@@ -689,6 +695,7 @@ describe('DatabaseFetcher tests', () => {
             context: {
               others: {},
               genMarkdownForPage: (_: NotionPage) => '',
+              fetchMedia: (mediaUrl: string) => '',
             },
             onPostPageMapping: (page: NotionPage) => {
               postMappedPages.push(page);
@@ -724,6 +731,7 @@ describe('DatabaseFetcher tests', () => {
             context: {
               others: {},
               genMarkdownForPage: (_: NotionPage) => '',
+              fetchMedia: (mediaUrl: string) => '',
             },
             onPostPageMapping: (page: NotionPage) => {
               postMappedPages.push(page);

@@ -43,6 +43,7 @@
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "@types/mustache": "^4.1.2",
+    "@types/request": "^2.48.7",
     "chai": "^4.3.4",
     "cross-env": "^7.0.3",
     "mocha": "^9.1.2",
@@ -56,6 +57,7 @@
     "@notionhq/client": "^0.4.4",
     "axios": "^0.23.0",
     "mustache": "^4.2.0",
+    "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "save": "^2.4.0"
   }

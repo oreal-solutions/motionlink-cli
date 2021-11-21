@@ -26,6 +26,7 @@ export type Context = {
   // Object of other Notiondatabase objects
   others: object;
   genMarkdownForPage: (notionPage: NotionPage) => string;
+  fetchMedia: (mediaUrl: string) => string;
 };
 
 type T =

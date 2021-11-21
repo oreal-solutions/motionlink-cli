@@ -5,6 +5,7 @@ import NotionService from './notion_service';
 import FileSystemService from './file_system_service';
 import MustacheService from './mustache_service';
 import MarkdownService from './markdown_service';
+import MediaService from './media_service';
 
 export interface BuildService {
   build: (templateRules: TemplateRule[], databaseAssociations: NotionDatabaseAssociation[]) => Promise<void>;
@@ -239,6 +240,7 @@ export class TemplateRuleBuilder {
     const ctx: Context = {
       others: [],
       genMarkdownForPage: MarkdownService.instance.genMarkdownForPage,
+      fetchMedia: (mediaUrl: string) => MediaService.instance.stageFetchRequest(mediaUrl, rule),
     };
 
     ctx.others = await this.secondaryDatabasesFetcher!.fetchAll(rule.alsoUses, databaseAssociations, ctx);
