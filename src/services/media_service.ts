@@ -5,6 +5,7 @@ import * as fs from 'fs';
 
 import { TemplateRule } from '../models/config_models';
 import mediaTypes from '../constants/media_types';
+import FileSystemService from './file_system_service';
 
 /**
  * A service for fetching media assets from given Notion URLs.
@@ -58,7 +59,12 @@ export class MediaDestinationController {
   public makeFileDestinationForAssetWithUrl(url: string): string {
     const subfolderName = this.getSubfolderNameForUrl(url);
     const filename = this.getUrlBasename(url);
-    return `${this.templateRule.outDir}/${subfolderName}/${filename}`;
+    const parentFolder = `${this.templateRule.outDir}/${subfolderName}`;
+
+    if (!FileSystemService.instance.doesFolderExist(parentFolder))
+      FileSystemService.instance.createFolder(parentFolder);
+
+    return `${parentFolder}/${filename}`;
   }
 
   private getSubfolderNameForUrl(url: string): string {
