@@ -1,8 +1,8 @@
 // All the types in this file were copied from:
 // https://github.com/makenotion/notion-sdk-js/blob/main/src/api-endpoints.ts
 
-declare type IdRequest = string | string;
-declare type TextRequest = string;
+export type IdRequest = string | string;
+export type TextRequest = string;
 
 // See: https://developers.notion.com/reference/rich-text#text-objects
 export type TextObject = {

@@ -5,7 +5,7 @@ import { TextObject } from '../models/notion_objects';
 /**
  * The object transformers.
  *
- * the keys are the object types and the value is the object type to
+ * The keys are the object types and the value is the object type to
  * Markdown transformer.
  *
  * These can be overwritten to provide custom implementations.
@@ -14,7 +14,16 @@ import { TextObject } from '../models/notion_objects';
  */
 export const ObjectTransformers = {
   text: (object: TextObject): string => {
-    return '';
+    let out = '';
+    if (object.text.link == null) out = object.text.content;
+    else out = `[${object.text.content}](${object.text.link.url})`;
+
+    if (object.annotations.code) out = `\`${out}\``;
+    if (object.annotations.strikethrough) out = `~~${out}~~`;
+    if (object.annotations.italic) out = `__${out}__`;
+    if (object.annotations.bold) out = `**${out}**`;
+
+    return out;
   },
 };
 
