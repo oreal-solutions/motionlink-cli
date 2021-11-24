@@ -47,78 +47,7 @@ export type TextObject = {
 // See: https://developers.notion.com/reference/rich-text#mention-objects
 export type MentionObject = {
   type: 'mention';
-  mention:
-    | {
-        type: 'user';
-        user:
-          | {
-              id: IdRequest;
-              object: 'user';
-            }
-          | {
-              type: 'person';
-              person: {
-                email: string;
-              };
-              name: string | null;
-              avatar_url: string | null;
-              id: IdRequest;
-              object: 'user';
-            }
-          | {
-              type: 'bot';
-              bot:
-                | Record<string, never>
-                | {
-                    owner:
-                      | {
-                          type: 'user';
-                          user:
-                            | {
-                                type: 'person';
-                                person: {
-                                  email: string;
-                                };
-                                name: string | null;
-                                avatar_url: string | null;
-                                id: IdRequest;
-                                object: 'user';
-                              }
-                            | {
-                                id: IdRequest;
-                                object: 'user';
-                              };
-                        }
-                      | {
-                          type: 'workspace';
-                          workspace: true;
-                        };
-                  };
-              name: string | null;
-              avatar_url: string | null;
-              id: IdRequest;
-              object: 'user';
-            };
-      }
-    | {
-        type: 'date';
-        date: {
-          start: string;
-          end: string | null;
-        };
-      }
-    | {
-        type: 'page';
-        page: {
-          id: IdRequest;
-        };
-      }
-    | {
-        type: 'database';
-        database: {
-          id: IdRequest;
-        };
-      };
+  mention: UserObject | DateObject | PageMentionObject | DatabaseMentionObject;
   annotations: {
     bold: boolean;
     italic: boolean;
@@ -148,6 +77,81 @@ export type MentionObject = {
   };
   plain_text: string;
   href: string | null;
+};
+
+export type UserObject = {
+  type: 'user';
+  user:
+    | {
+        id: IdRequest;
+        object: 'user';
+      }
+    | {
+        type: 'person';
+        person: {
+          email: string;
+        };
+        name: string | null;
+        avatar_url: string | null;
+        id: IdRequest;
+        object: 'user';
+      }
+    | {
+        type: 'bot';
+        bot:
+          | Record<string, never>
+          | {
+              owner:
+                | {
+                    type: 'user';
+                    user:
+                      | {
+                          type: 'person';
+                          person: {
+                            email: string;
+                          };
+                          name: string | null;
+                          avatar_url: string | null;
+                          id: IdRequest;
+                          object: 'user';
+                        }
+                      | {
+                          id: IdRequest;
+                          object: 'user';
+                        };
+                  }
+                | {
+                    type: 'workspace';
+                    workspace: true;
+                  };
+            };
+        name: string | null;
+        avatar_url: string | null;
+        id: IdRequest;
+        object: 'user';
+      };
+};
+
+export type DateObject = {
+  type: 'date';
+  date: {
+    start: string;
+    end: string | null;
+  };
+};
+
+export type PageMentionObject = {
+  type: 'page';
+  page: {
+    id: IdRequest;
+  };
+};
+
+export type DatabaseMentionObject = {
+  type: 'database';
+  database: {
+    id: IdRequest;
+  };
 };
 
 // See: https://developers.notion.com/reference/rich-text#equation-objects

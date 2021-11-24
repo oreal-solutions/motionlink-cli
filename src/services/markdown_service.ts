@@ -1,6 +1,25 @@
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionPage } from '../models/config_models';
-import { TextObject } from '../models/notion_objects';
+import { MentionObject, TextObject } from '../models/notion_objects';
+
+function applyAnnotations(
+  text: string,
+  annotations: {
+    bold: boolean;
+    italic: boolean;
+    strikethrough: boolean;
+    code: boolean;
+  },
+): string {
+  let out = text;
+
+  if (annotations.code) out = `\`${out}\``;
+  if (annotations.strikethrough) out = `~~${out}~~`;
+  if (annotations.italic) out = `__${out}__`;
+  if (annotations.bold) out = `**${out}**`;
+
+  return out;
+}
 
 /**
  * The object transformers.
@@ -14,16 +33,38 @@ import { TextObject } from '../models/notion_objects';
  */
 export const ObjectTransformers = {
   text: (object: TextObject): string => {
+    let out = object.text.content;
+    if (object.text.link) out = `[${out}](${object.text.link.url})`;
+
+    return applyAnnotations(out, object.annotations);
+  },
+
+  mention: (object: MentionObject): string => {
     let out = '';
-    if (object.text.link == null) out = object.text.content;
-    else out = `[${object.text.content}](${object.text.link.url})`;
 
-    if (object.annotations.code) out = `\`${out}\``;
-    if (object.annotations.strikethrough) out = `~~${out}~~`;
-    if (object.annotations.italic) out = `__${out}__`;
-    if (object.annotations.bold) out = `**${out}**`;
+    if (object.mention.type === 'user') {
+      const user = object.mention.user;
+      if ((user as any).type === 'person' || (user as any).type === 'bot') {
+        out = (user as any).name;
+      } else {
+        out = object.plain_text;
+      }
 
-    return out;
+      if (object.href) out = `[${out}](${object.href})`;
+    } else if (object.mention.type === 'date') {
+      const date = object.mention.date;
+      if (date.end != null) out = `${date.start} to ${date.end}`;
+      else out = date.start;
+
+      if (object.href) out = `[${out}](${object.href})`;
+    } else if (object.mention.type === 'page') {
+      const page = object.mention.page;
+      out = `[${object.plain_text}](:::pathTo:::${page.id}:::)`;
+    } else if (object.mention.type === 'database') {
+      out = `[${object.plain_text}](${object.href})`;
+    }
+
+    return applyAnnotations(out, object.annotations);
   },
 };
 
