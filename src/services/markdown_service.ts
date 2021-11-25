@@ -1,6 +1,6 @@
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionPage } from '../models/config_models';
-import { MentionObject, TextObject } from '../models/notion_objects';
+import { EquationObject, MentionObject, TextObject } from '../models/notion_objects';
 
 function applyAnnotations(
   text: string,
@@ -63,6 +63,13 @@ export const ObjectTransformers = {
     } else if (object.mention.type === 'database') {
       out = `[${object.plain_text}](${object.href})`;
     }
+
+    return applyAnnotations(out, object.annotations);
+  },
+
+  equation: (object: EquationObject): string => {
+    let out = `\\(${object.equation.expression}\\)`;
+    if (object.href) out = `[${out}](${object.href})`;
 
     return applyAnnotations(out, object.annotations);
   },

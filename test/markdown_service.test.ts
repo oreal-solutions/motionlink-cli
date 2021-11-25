@@ -4,6 +4,7 @@ import { ObjectTransformers } from '../src/services/markdown_service';
 import {
   DatabaseMentionObject,
   DateObject,
+  EquationObject,
   MentionObject,
   PageMentionObject,
   TextObject,
@@ -507,6 +508,166 @@ describe('ObjectTransformers tests', () => {
 
           expect(ObjectTransformers.mention(object)).to.equal('**__~~`[2020-12-08T12:00:00Z](example.com)`~~__**');
         });
+      });
+    });
+  });
+
+  describe('equation', () => {
+    describe('When all annotations are off', () => {
+      describe('When href is null', () => {
+        function makeEquationObject(expression: string): EquationObject {
+          return {
+            type: 'equation',
+            equation: {
+              expression: expression,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: expression,
+            href: null,
+          };
+        }
+
+        it("Should return '\\(abc\\)' when expression is 'abc'", () => {
+          const object = makeEquationObject('abc');
+          expect(ObjectTransformers.equation(object)).to.equal('\\(abc\\)');
+        });
+      });
+
+      describe("When href is 'example.com'", () => {
+        function makeEquationObject(expression: string, href: 'example.com'): EquationObject {
+          return {
+            type: 'equation',
+            equation: {
+              expression: expression,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: expression,
+            href: href,
+          };
+        }
+
+        it("Should return '[\\(abc\\)](example.com)' when expression is 'abc'", () => {
+          const object = makeEquationObject('abc', 'example.com');
+          expect(ObjectTransformers.equation(object)).to.equal('[\\(abc\\)](example.com)');
+        });
+      });
+    });
+
+    describe("When href is 'example.com'", () => {
+      function makeEquationObjectWithAnnotations(
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: 'default';
+        },
+        expression: string,
+      ): EquationObject {
+        return {
+          type: 'equation',
+          equation: {
+            expression: expression,
+          },
+          annotations: annotations,
+          plain_text: expression,
+          href: 'example.com',
+        };
+      }
+
+      it("Should return '**[\\(abc\\)](example.com)**' when only the bold annotation is true", () => {
+        const object = makeEquationObjectWithAnnotations(
+          {
+            bold: true,
+            italic: false,
+            strikethrough: false,
+            underline: false,
+            code: false,
+            color: 'default',
+          },
+          'abc',
+        );
+
+        expect(ObjectTransformers.equation(object)).to.equal('**[\\(abc\\)](example.com)**');
+      });
+
+      it("Should return '__[\\(abc\\)](example.com)__' when only the italic annotation is true", () => {
+        const object = makeEquationObjectWithAnnotations(
+          {
+            bold: false,
+            italic: true,
+            strikethrough: false,
+            underline: false,
+            code: false,
+            color: 'default',
+          },
+          'abc',
+        );
+
+        expect(ObjectTransformers.equation(object)).to.equal('__[\\(abc\\)](example.com)__');
+      });
+
+      it("Should return '~~[\\(abc\\)](example.com)~~' when only the strikethrough annotation is true", () => {
+        const object = makeEquationObjectWithAnnotations(
+          {
+            bold: false,
+            italic: false,
+            strikethrough: true,
+            underline: false,
+            code: false,
+            color: 'default',
+          },
+          'abc',
+        );
+
+        expect(ObjectTransformers.equation(object)).to.equal('~~[\\(abc\\)](example.com)~~');
+      });
+
+      it("Should return '`[\\(abc\\)](example.com)`' when only the code annotation is true", () => {
+        const object = makeEquationObjectWithAnnotations(
+          {
+            bold: false,
+            italic: false,
+            strikethrough: false,
+            underline: false,
+            code: true,
+            color: 'default',
+          },
+          'abc',
+        );
+
+        expect(ObjectTransformers.equation(object)).to.equal('`[\\(abc\\)](example.com)`');
+      });
+
+      it("Should return '**__~~`[\\(abc\\)](example.com)`~~__**' when the bold, italic, strikethrough, and code annotations are true", () => {
+        const object = makeEquationObjectWithAnnotations(
+          {
+            bold: true,
+            italic: true,
+            strikethrough: true,
+            underline: false,
+            code: true,
+            color: 'default',
+          },
+          'abc',
+        );
+
+        expect(ObjectTransformers.equation(object)).to.equal('**__~~`[\\(abc\\)](example.com)`~~__**');
       });
     });
   });
