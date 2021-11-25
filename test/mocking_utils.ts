@@ -19,6 +19,7 @@ import {
   TemplateRuleOutputWriter,
 } from '../src/services/build_service';
 import FileSystemService from '../src/services/file_system_service';
+import MediaService from '../src/services/media_service';
 import MustacheService from '../src/services/mustache_service';
 import NotionService from '../src/services/notion_service';
 
@@ -48,6 +49,13 @@ export function setMockedNotionService(mock: {
   getBlockChildren?: (args: { blockId: string; withToken: Token }) => AsyncGenerator<GetBlockResponse, void, undefined>;
 }) {
   NotionService.setMockedInstance(mock as NotionService);
+}
+
+export function setMockedMediaService(mock: {
+  stageFetchRequest?: (url: string, templateRule: TemplateRule) => string;
+  commit?: () => Promise<void>;
+}) {
+  MediaService.setMockedInstance(mock as MediaService);
 }
 
 export function asMockedFileExtensionFinder(mock: { findFileExtensionOf: (path: string) => string }) {

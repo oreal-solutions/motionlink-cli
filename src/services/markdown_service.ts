@@ -1,6 +1,7 @@
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
-import { NotionPage } from '../models/config_models';
-import { EquationObject, MentionObject, TextObject } from '../models/notion_objects';
+import { NotionPage, TemplateRule } from '../models/config_models';
+import { EquationObject, FileObject, MentionObject, TextObject } from '../models/notion_objects';
+import MediaService from './media_service';
 
 function applyAnnotations(
   text: string,
@@ -19,6 +20,32 @@ function applyAnnotations(
   if (annotations.bold) out = `**${out}**`;
 
   return out;
+}
+
+function transformAllObjectsWithPrefix(
+  objects: Array<TextObject | MentionObject | EquationObject>,
+  prefix: string,
+): string {
+  return `${prefix}${ObjectTransformers.transform_all(objects)}`;
+}
+
+/**
+ * @visibleForTesting
+ */
+export function getMedia(object: FileObject, rule: TemplateRule): { src: string; captionMarkdown: string } {
+  const captionMd = transformAllObjectsWithPrefix(object.caption, '');
+  let source = '';
+
+  if (object.type === 'external') {
+    source = object.external.url;
+  } else {
+    source = MediaService.instance.stageFetchRequest(object.file.url, rule);
+  }
+
+  return {
+    src: source,
+    captionMarkdown: captionMd,
+  };
 }
 
 /**
@@ -73,6 +100,10 @@ export const ObjectTransformers = {
 
     return applyAnnotations(out, object.annotations);
   },
+
+  transform_all: (objects: Array<TextObject | MentionObject | EquationObject>): string => {
+    return objects.map((object) => ObjectTransformers[object.type](object as any)).join('');
+  },
 };
 
 /**
@@ -85,8 +116,71 @@ export const ObjectTransformers = {
  */
 export const BlockTransformers = {
   paragraph: (block: GetBlockResponse): string => {
-    const listOfObjects: Array<TextObject | MentionObject | EquationObject> = (block as any).paragraph.text;
-    return listOfObjects.map((object) => ObjectTransformers[object.type](object as any)).join('');
+    return transformAllObjectsWithPrefix((block as any).paragraph.text, '');
+  },
+
+  heading_1: (block: GetBlockResponse): string => {
+    return transformAllObjectsWithPrefix((block as any).heading_1.text, '# ');
+  },
+
+  heading_2: (block: GetBlockResponse): string => {
+    return transformAllObjectsWithPrefix((block as any).heading_2.text, '## ');
+  },
+
+  heading_3: (block: GetBlockResponse): string => {
+    return transformAllObjectsWithPrefix((block as any).heading_3.text, '### ');
+  },
+
+  bulleted_list_item: (block: GetBlockResponse): string => {
+    return transformAllObjectsWithPrefix((block as any).bulleted_list_item.text, '- ');
+  },
+
+  numbered_list_item: (block: GetBlockResponse, index: number): string => {
+    return transformAllObjectsWithPrefix((block as any).numbered_list_item.text, `${index}. `);
+  },
+
+  to_do: (block: GetBlockResponse): string => {
+    const check = (block as any).to_do.checked ? 'X' : ' ';
+    return transformAllObjectsWithPrefix((block as any).to_do.text, `- [${check}] `);
+  },
+
+  toggle: (block: GetBlockResponse): string => {
+    return transformAllObjectsWithPrefix((block as any).toggle.text, '');
+  },
+
+  child_page: (block: GetBlockResponse): string => {
+    const id = block.id.split('-').join('');
+    return `[${(block as any).child_page.title}](https://www.notion.so/${id})`;
+  },
+
+  child_database: (block: GetBlockResponse): string => {
+    const id = block.id.split('-').join('');
+    return `[${(block as any).child_database.title}](https://www.notion.so/${id})`;
+  },
+
+  embed: (block: GetBlockResponse): string => {
+    const caption = transformAllObjectsWithPrefix((block as any).embed.caption, '');
+    return `[${caption}](${(block as any).embed.url} ':include')`;
+  },
+
+  image: (block: GetBlockResponse, rule: TemplateRule): string => {
+    const media = getMedia((block as any).image, rule);
+    return `![${media.captionMarkdown}](${media.src} "${media.captionMarkdown}")`;
+  },
+
+  video: (block: GetBlockResponse, rule: TemplateRule): string => {
+    const media = getMedia((block as any).video, rule);
+    return `[${media.captionMarkdown}](${media.src} ':include')`;
+  },
+
+  file: (block: GetBlockResponse, rule: TemplateRule): string => {
+    const media = getMedia((block as any).file, rule);
+    return `[${media.captionMarkdown}](${media.src} ':include')`;
+  },
+
+  pdf: (block: GetBlockResponse, rule: TemplateRule): string => {
+    const media = getMedia((block as any).pdf, rule);
+    return `[${media.captionMarkdown}](${media.src} ':include')`;
   },
 };
 

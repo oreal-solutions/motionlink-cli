@@ -1,10 +1,11 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { BlockTransformers, ObjectTransformers } from '../src/services/markdown_service';
+import { BlockTransformers, getMedia, ObjectTransformers } from '../src/services/markdown_service';
 import {
   DatabaseMentionObject,
   DateObject,
   EquationObject,
+  FileObject,
   MentionObject,
   PageMentionObject,
   TextObject,
@@ -12,6 +13,7 @@ import {
   UserObject,
 } from '../src/models/notion_objects';
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
+import { setMockedMediaService } from './mocking_utils';
 
 describe('ObjectTransformers tests', () => {
   describe('text', () => {
@@ -672,29 +674,39 @@ describe('ObjectTransformers tests', () => {
       });
     });
   });
-});
 
-describe('BlockTransformers tests', () => {
-  describe('paragraph', () => {
-    it('Should transform paragraph.text objects with the text, mention, and equation ObjectTransfromers and merge their outputs', () => {
+  describe('transform_all', () => {
+    it('Should transform allobjects with the text, mention, and equation ObjectTransfromers and merge their outputs', () => {
       ObjectTransformers.text = (_) => 'text object, ';
       ObjectTransformers.mention = (_) => 'mention object, ';
       ObjectTransformers.equation = (_) => 'equation object';
 
-      const paragraphBlock: GetBlockResponse = {
+      const objects = [
+        {
+          type: 'text',
+        },
+        {
+          type: 'mention',
+        },
+        {
+          type: 'equation',
+        },
+      ] as any[];
+
+      expect(ObjectTransformers.transform_all(objects)).to.equal('text object, mention object, equation object');
+    });
+  });
+});
+
+describe('BlockTransformers tests', () => {
+  describe('paragraph', () => {
+    it("Should return 'abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
         type: 'paragraph',
         paragraph: {
-          text: [
-            {
-              type: 'text',
-            },
-            {
-              type: 'mention',
-            },
-            {
-              type: 'equation',
-            },
-          ] as any[],
+          text: [],
         },
         object: 'block',
         id: '',
@@ -704,7 +716,377 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.paragraph(paragraphBlock)).to.equal('text object, mention object, equation object');
+      expect(BlockTransformers.paragraph(block)).to.equal('abc');
+    });
+  });
+
+  describe('heading_1', () => {
+    it("Should return '# abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'heading_1',
+        heading_1: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.heading_1(block)).to.equal('# abc');
+    });
+  });
+
+  describe('heading_2', () => {
+    it("Should return '## abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'heading_2',
+        heading_2: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.heading_2(block)).to.equal('## abc');
+    });
+  });
+
+  describe('heading_3', () => {
+    it("Should return '### abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'heading_3',
+        heading_3: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.heading_3(block)).to.equal('### abc');
+    });
+  });
+
+  describe('bulleted_list_item', () => {
+    it("Should return '- abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'bulleted_list_item',
+        bulleted_list_item: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.bulleted_list_item(block)).to.equal('- abc');
+    });
+  });
+
+  describe('numbered_list_item', () => {
+    it("Should return '2. abc' when ObjectTransformers.transform_all returns 'abc' and index is 2", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'numbered_list_item',
+        numbered_list_item: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.numbered_list_item(block, 2)).to.equal('2. abc');
+    });
+  });
+
+  describe('to_do', () => {
+    it("Should return '- [ ] abc' when ObjectTransformers.transform_all returns 'abc' and checked is false", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'to_do',
+        to_do: {
+          text: [],
+          checked: false,
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.to_do(block)).to.equal('- [ ] abc');
+    });
+
+    it("Should return '- [X] abc' when ObjectTransformers.transform_all returns 'abc' and checked is true", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'to_do',
+        to_do: {
+          text: [],
+          checked: true,
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.to_do(block)).to.equal('- [X] abc');
+    });
+  });
+
+  describe('toggle', () => {
+    it("Should return 'abc' when ObjectTransformers.transform_all returns 'abc'", () => {
+      const block: GetBlockResponse = {
+        type: 'toggle',
+        toggle: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.toggle(block)).to.equal('abc');
+    });
+  });
+
+  describe('child_page', () => {
+    it("Should return '[abc](https://www.notion.so/efghijklm)' when page title is 'abc' and id is 'efg-hij-klm'", () => {
+      const block: GetBlockResponse = {
+        type: 'child_page',
+        child_page: {
+          title: 'abc',
+        },
+        object: 'block',
+        id: 'efg-hij-klm',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.child_page(block)).to.equal('[abc](https://www.notion.so/efghijklm)');
+    });
+  });
+
+  describe('child_database', () => {
+    it("Should return '[abc](https://www.notion.so/efghijklm)' when database title is 'abc' and id is 'efg-hij-klm'", () => {
+      const block: GetBlockResponse = {
+        type: 'child_database',
+        child_database: {
+          title: 'abc',
+        },
+        object: 'block',
+        id: 'efg-hij-klm',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.child_database(block)).to.equal('[abc](https://www.notion.so/efghijklm)');
+    });
+  });
+
+  describe('embed', () => {
+    it("Should return \"[abc](example.com ':include')\" when ObjectTransformers.transform_all returns 'abc' for caption and embed url is 'example.com'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'embed',
+        embed: {
+          url: 'example.com',
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.embed(block)).to.equal("[abc](example.com ':include')");
+    });
+  });
+
+  describe('image', () => {
+    it('Should return ![abc](example.com "abc") when getMedia returns src=example.com and captionMarkdown=abc', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'image',
+        image: {
+          type: 'external',
+          external: {
+            url: 'example.com',
+          },
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.image(block, {} as any)).to.equal('![abc](example.com "abc")');
+    });
+  });
+
+  describe('video', () => {
+    it('Should return "[abc](example.com \':include\')" when getMedia returns src=example.com and captionMarkdown=abc', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'video',
+        video: {
+          type: 'external',
+          external: {
+            url: 'example.com',
+          },
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.video(block, {} as any)).to.equal("[abc](example.com ':include')");
+    });
+  });
+
+  describe('file', () => {
+    it('Should return "[abc](example.com \':include\')" when getMedia returns src=example.com and captionMarkdown=abc', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'file',
+        file: {
+          type: 'external',
+          external: {
+            url: 'example.com',
+          },
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.file(block, {} as any)).to.equal("[abc](example.com ':include')");
+    });
+  });
+
+  describe('pdf', () => {
+    it('Should return "[abc](example.com \':include\')" when getMedia returns src=example.com and captionMarkdown=abc', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'pdf',
+        pdf: {
+          type: 'external',
+          external: {
+            url: 'example.com',
+          },
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.pdf(block, {} as any)).to.equal("[abc](example.com ':include')");
+    });
+  });
+});
+
+describe('getMedia tests', () => {
+  describe("When type is 'external'", () => {
+    it('Should return src=file url and captionMarkdown=the value returned by ObjectTransformers.transform_all for file caption', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const object: FileObject = {
+        type: 'external',
+        external: {
+          url: 'example.com',
+        },
+        caption: [],
+      };
+
+      expect(getMedia(object, {} as any)).to.deep.equal({
+        src: 'example.com',
+        captionMarkdown: 'abc',
+      });
+    });
+  });
+
+  describe("When type is 'file'", () => {
+    it('Should return src=file path as returned by MediaService.fetchMedia and captionMarkdown=the value returned by ObjectTransformers.transform_all for file caption', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+      setMockedMediaService({
+        stageFetchRequest: (url, _) => `${url} abc`,
+      });
+
+      const object: FileObject = {
+        type: 'file',
+        file: {
+          url: 'example.com',
+          expiry_time: '',
+        },
+        caption: [],
+      };
+
+      expect(getMedia(object, {} as any)).to.deep.equal({
+        src: 'example.com abc',
+        captionMarkdown: 'abc',
+      });
     });
   });
 });

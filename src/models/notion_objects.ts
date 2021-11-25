@@ -190,3 +190,20 @@ export type EquationObject = {
   plain_text: string;
   href: string | null;
 };
+
+export type FileObject =
+  | {
+      type: 'external';
+      external: {
+        url: string;
+      };
+      caption: Array<TextObject | MentionObject | EquationObject>;
+    }
+  | {
+      type: 'file';
+      file: {
+        url: string;
+        expiry_time: string;
+      };
+      caption: Array<TextObject | MentionObject | EquationObject>;
+    };
