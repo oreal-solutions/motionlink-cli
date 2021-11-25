@@ -85,7 +85,8 @@ export const ObjectTransformers = {
  */
 export const BlockTransformers = {
   paragraph: (block: GetBlockResponse): string => {
-    return '';
+    const listOfObjects: Array<TextObject | MentionObject | EquationObject> = (block as any).paragraph.text;
+    return listOfObjects.map((object) => ObjectTransformers[object.type](object as any)).join('');
   },
 };
 

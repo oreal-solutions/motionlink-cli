@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { ObjectTransformers } from '../src/services/markdown_service';
+import { BlockTransformers, ObjectTransformers } from '../src/services/markdown_service';
 import {
   DatabaseMentionObject,
   DateObject,
@@ -11,6 +11,7 @@ import {
   TextRequest,
   UserObject,
 } from '../src/models/notion_objects';
+import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 
 describe('ObjectTransformers tests', () => {
   describe('text', () => {
@@ -669,6 +670,41 @@ describe('ObjectTransformers tests', () => {
 
         expect(ObjectTransformers.equation(object)).to.equal('**__~~`[\\(abc\\)](example.com)`~~__**');
       });
+    });
+  });
+});
+
+describe('BlockTransformers tests', () => {
+  describe('paragraph', () => {
+    it('Should transform paragraph.text objects with the text, mention, and equation ObjectTransfromers and merge their outputs', () => {
+      ObjectTransformers.text = (_) => 'text object, ';
+      ObjectTransformers.mention = (_) => 'mention object, ';
+      ObjectTransformers.equation = (_) => 'equation object';
+
+      const paragraphBlock: GetBlockResponse = {
+        type: 'paragraph',
+        paragraph: {
+          text: [
+            {
+              type: 'text',
+            },
+            {
+              type: 'mention',
+            },
+            {
+              type: 'equation',
+            },
+          ] as any[],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.paragraph(paragraphBlock)).to.equal('text object, mention object, equation object');
     });
   });
 });
