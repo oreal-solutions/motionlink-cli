@@ -1045,6 +1045,287 @@ describe('BlockTransformers tests', () => {
       expect(BlockTransformers.pdf(block, {} as any)).to.equal("[abc](example.com ':include')");
     });
   });
+
+  describe('audio', () => {
+    it('Should return "[abc](example.com \':include\')" when getMedia returns src=example.com and captionMarkdown=abc', () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'audio',
+        audio: {
+          type: 'external',
+          external: {
+            url: 'example.com',
+          },
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.audio(block, {} as any)).to.equal("[abc](example.com ':include')");
+    });
+  });
+
+  describe('bookmark', () => {
+    it("Should return '[example.com](example.com)' when url is 'example.com'", () => {
+      const block: GetBlockResponse = {
+        type: 'bookmark',
+        bookmark: {
+          url: 'example.com',
+          caption: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.bookmark(block)).to.equal('[example.com](example.com)');
+    });
+  });
+
+  describe('callout', () => {
+    describe('When icon is emoji', () => {
+      it("Should return '> 😉 abc' when emoji is '😉' and ObjectTransformers.transform_all returns 'abc' for callout text", () => {
+        ObjectTransformers.transform_all = (_) => 'abc';
+
+        const block: GetBlockResponse = {
+          type: 'callout',
+          callout: {
+            icon: {
+              type: 'emoji',
+              emoji: '😉',
+            },
+            text: [],
+          },
+          object: 'block',
+          id: '',
+          created_time: '',
+          last_edited_time: '',
+          has_children: false,
+          archived: false,
+        };
+
+        expect(BlockTransformers.callout(block)).to.equal('> 😉 abc');
+      });
+    });
+
+    describe('When icon is external file', () => {
+      it("Should return '> abc' when ObjectTransformers.transform_all returns 'abc' for callout text", () => {
+        ObjectTransformers.transform_all = (_) => 'abc';
+
+        const block: GetBlockResponse = {
+          type: 'callout',
+          callout: {
+            icon: {
+              type: 'external',
+              external: {
+                url: 'example.com',
+              },
+            },
+            text: [],
+          },
+          object: 'block',
+          id: '',
+          created_time: '',
+          last_edited_time: '',
+          has_children: false,
+          archived: false,
+        };
+
+        expect(BlockTransformers.callout(block)).to.equal('> abc');
+      });
+    });
+
+    describe('When icon is file', () => {
+      it("Should return '> abc' when ObjectTransformers.transform_all returns 'abc' for callout text", () => {
+        ObjectTransformers.transform_all = (_) => 'abc';
+
+        const block: GetBlockResponse = {
+          type: 'callout',
+          callout: {
+            icon: {
+              type: 'file',
+              file: {
+                url: 'example.com',
+                expiry_time: '',
+              },
+            },
+            text: [],
+          },
+          object: 'block',
+          id: '',
+          created_time: '',
+          last_edited_time: '',
+          has_children: false,
+          archived: false,
+        };
+
+        expect(BlockTransformers.callout(block)).to.equal('> abc');
+      });
+    });
+
+    describe('When icon is null', () => {
+      it("Should return '> abc' when ObjectTransformers.transform_all returns 'abc' for callout text", () => {
+        ObjectTransformers.transform_all = (_) => 'abc';
+
+        const block: GetBlockResponse = {
+          type: 'callout',
+          callout: {
+            icon: null,
+            text: [],
+          },
+          object: 'block',
+          id: '',
+          created_time: '',
+          last_edited_time: '',
+          has_children: false,
+          archived: false,
+        };
+
+        expect(BlockTransformers.callout(block)).to.equal('> abc');
+      });
+    });
+  });
+
+  describe('quote', () => {
+    it("Should return '> abc' when ObjectTransformers.transform_all returns 'abc' for quote text", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'quote',
+        quote: {
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.quote(block)).to.equal('> abc');
+    });
+  });
+
+  describe('equation', () => {
+    it("Should return '$$abc$$' when expression is 'abc'", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'equation',
+        equation: {
+          expression: 'abc',
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.equation(block)).to.equal('$$abc$$');
+    });
+  });
+
+  describe('divider', () => {
+    it("Should return '---'", () => {
+      const block: GetBlockResponse = {
+        type: 'divider',
+        divider: {},
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.divider(block)).to.equal('---');
+    });
+  });
+
+  describe('table_of_contents', () => {
+    it("Should return ''", () => {
+      const block: GetBlockResponse = {
+        type: 'table_of_contents',
+        table_of_contents: {},
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.table_of_contents(block)).to.equal('');
+    });
+  });
+
+  describe('breadcrumb', () => {
+    it("Should return ''", () => {
+      const block: GetBlockResponse = {
+        type: 'breadcrumb',
+        breadcrumb: {},
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.breadcrumb(block)).to.equal('');
+    });
+  });
+
+  describe('code', () => {
+    it("Should return '```java\nabc\n```' when the language is 'java' and ObjectTransformers.transform_all returns 'abc' for the code text", () => {
+      ObjectTransformers.transform_all = (_) => 'abc';
+
+      const block: GetBlockResponse = {
+        type: 'code',
+        code: {
+          language: 'java',
+          text: [],
+        },
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.code(block)).to.equal('```java\nabc\n```');
+    });
+  });
+
+  describe('unsupported', () => {
+    it("Should return 'Unsupported'", () => {
+      const block: GetBlockResponse = {
+        type: 'unsupported',
+        unsupported: {},
+        object: 'block',
+        id: '',
+        created_time: '',
+        last_edited_time: '',
+        has_children: false,
+        archived: false,
+      };
+
+      expect(BlockTransformers.unsupported(block)).to.equal('Unsupported');
+    });
+  });
 });
 
 describe('getMedia tests', () => {

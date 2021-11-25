@@ -116,71 +116,205 @@ export const ObjectTransformers = {
  */
 export const BlockTransformers = {
   paragraph: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).paragraph.text, '');
+    if (block.type === 'paragraph') {
+      return transformAllObjectsWithPrefix(block.paragraph.text, '');
+    }
+
+    return '';
   },
 
   heading_1: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).heading_1.text, '# ');
+    if (block.type === 'heading_1') {
+      return transformAllObjectsWithPrefix(block.heading_1.text, '# ');
+    }
+
+    return '';
   },
 
   heading_2: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).heading_2.text, '## ');
+    if (block.type === 'heading_2') {
+      return transformAllObjectsWithPrefix(block.heading_2.text, '## ');
+    }
+
+    return '';
   },
 
   heading_3: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).heading_3.text, '### ');
+    if (block.type === 'heading_3') {
+      return transformAllObjectsWithPrefix(block.heading_3.text, '### ');
+    }
+
+    return '';
   },
 
   bulleted_list_item: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).bulleted_list_item.text, '- ');
+    if (block.type === 'bulleted_list_item') {
+      return transformAllObjectsWithPrefix(block.bulleted_list_item.text, '- ');
+    }
+
+    return '';
   },
 
   numbered_list_item: (block: GetBlockResponse, index: number): string => {
-    return transformAllObjectsWithPrefix((block as any).numbered_list_item.text, `${index}. `);
+    if (block.type === 'numbered_list_item') {
+      return transformAllObjectsWithPrefix(block.numbered_list_item.text, `${index}. `);
+    }
+
+    return '';
   },
 
   to_do: (block: GetBlockResponse): string => {
-    const check = (block as any).to_do.checked ? 'X' : ' ';
-    return transformAllObjectsWithPrefix((block as any).to_do.text, `- [${check}] `);
+    if (block.type === 'to_do') {
+      const check = block.to_do.checked ? 'X' : ' ';
+      return transformAllObjectsWithPrefix(block.to_do.text, `- [${check}] `);
+    }
+
+    return '';
   },
 
   toggle: (block: GetBlockResponse): string => {
-    return transformAllObjectsWithPrefix((block as any).toggle.text, '');
+    if (block.type === 'toggle') {
+      return transformAllObjectsWithPrefix(block.toggle.text, '');
+    }
+
+    return '';
   },
 
   child_page: (block: GetBlockResponse): string => {
-    const id = block.id.split('-').join('');
-    return `[${(block as any).child_page.title}](https://www.notion.so/${id})`;
+    if (block.type === 'child_page') {
+      const id = block.id.split('-').join('');
+      return `[${block.child_page.title}](https://www.notion.so/${id})`;
+    }
+
+    return '';
   },
 
   child_database: (block: GetBlockResponse): string => {
-    const id = block.id.split('-').join('');
-    return `[${(block as any).child_database.title}](https://www.notion.so/${id})`;
+    if (block.type === 'child_database') {
+      const id = block.id.split('-').join('');
+      return `[${block.child_database.title}](https://www.notion.so/${id})`;
+    }
+
+    return '';
   },
 
   embed: (block: GetBlockResponse): string => {
-    const caption = transformAllObjectsWithPrefix((block as any).embed.caption, '');
-    return `[${caption}](${(block as any).embed.url} ':include')`;
+    if (block.type === 'embed') {
+      const caption = transformAllObjectsWithPrefix(block.embed.caption, '');
+      return `[${caption}](${block.embed.url} ':include')`;
+    }
+
+    return '';
   },
 
   image: (block: GetBlockResponse, rule: TemplateRule): string => {
-    const media = getMedia((block as any).image, rule);
-    return `![${media.captionMarkdown}](${media.src} "${media.captionMarkdown}")`;
+    if (block.type === 'image') {
+      const media = getMedia(block.image, rule);
+      return `![${media.captionMarkdown}](${media.src} "${media.captionMarkdown}")`;
+    }
+
+    return '';
   },
 
   video: (block: GetBlockResponse, rule: TemplateRule): string => {
-    const media = getMedia((block as any).video, rule);
-    return `[${media.captionMarkdown}](${media.src} ':include')`;
+    if (block.type === 'video') {
+      const media = getMedia(block.video, rule);
+      return `[${media.captionMarkdown}](${media.src} ':include')`;
+    }
+
+    return '';
   },
 
   file: (block: GetBlockResponse, rule: TemplateRule): string => {
-    const media = getMedia((block as any).file, rule);
-    return `[${media.captionMarkdown}](${media.src} ':include')`;
+    if (block.type === 'file') {
+      const media = getMedia(block.file, rule);
+      return `[${media.captionMarkdown}](${media.src} ':include')`;
+    }
+
+    return '';
   },
 
   pdf: (block: GetBlockResponse, rule: TemplateRule): string => {
-    const media = getMedia((block as any).pdf, rule);
-    return `[${media.captionMarkdown}](${media.src} ':include')`;
+    if (block.type === 'pdf') {
+      const media = getMedia(block.pdf, rule);
+      return `[${media.captionMarkdown}](${media.src} ':include')`;
+    }
+
+    return '';
+  },
+
+  audio: (block: GetBlockResponse, rule: TemplateRule): string => {
+    if (block.type === 'audio') {
+      const media = getMedia(block.audio, rule);
+      return `[${media.captionMarkdown}](${media.src} ':include')`;
+    }
+
+    return '';
+  },
+
+  bookmark: (block: GetBlockResponse): string => {
+    if (block.type === 'bookmark') {
+      const url = block.bookmark.url;
+      return `[${url}](${url})`;
+    }
+
+    return '';
+  },
+
+  callout: (block: GetBlockResponse): string => {
+    if (block.type === 'callout') {
+      const text = transformAllObjectsWithPrefix(block.callout.text, '');
+      if (block.callout.icon?.type === 'emoji') {
+        const icon = block.callout.icon.emoji;
+        return `> ${icon} ${text}`;
+      }
+
+      return `> ${text}`;
+    }
+
+    return '';
+  },
+
+  quote: (block: GetBlockResponse): string => {
+    if (block.type === 'quote') {
+      const text = transformAllObjectsWithPrefix(block.quote.text, '');
+      return `> ${text}`;
+    }
+
+    return '';
+  },
+
+  equation: (block: GetBlockResponse): string => {
+    if (block.type === 'equation') {
+      const expression = block.equation.expression;
+      return `$$${expression}$$`;
+    }
+
+    return '';
+  },
+
+  divider: (block: GetBlockResponse): string => {
+    return '---';
+  },
+
+  table_of_contents: (block: GetBlockResponse): string => {
+    return '';
+  },
+
+  breadcrumb: (block: GetBlockResponse): string => {
+    return '';
+  },
+
+  code: (block: GetBlockResponse): string => {
+    if (block.type === 'code') {
+      const text = transformAllObjectsWithPrefix(block.code.text, '');
+      return '```' + block.code.language + '\n' + text + '\n```';
+    }
+    return '';
+  },
+
+  unsupported: (block: GetBlockResponse): string => {
+    return 'Unsupported';
   },
 };
 
