@@ -13,24 +13,29 @@ import FileSystemService from './file_system_service';
  * Uses Collect-Commit pattern.
  */
 export default class MediaService {
-  private readonly requests = new Map<string, MediaDestinationController>();
+  private readonly requests = new Map<string, { absolutePath: string; relativePath: string }>();
 
   public stageFetchRequest(url: string, templateRule: TemplateRule): string {
     const destinationController = new MediaDestinationController({
       forRule: templateRule,
     });
 
-    this.requests.set(url, destinationController);
-    return destinationController.makeFileDestinationForAssetWithUrl(url);
+    const relativeDestintation = destinationController.makeFileDestinationForAssetWithUrl(url);
+    this.requests.set(url, {
+      relativePath: relativeDestintation,
+      absolutePath: `${templateRule.outDir}/${relativeDestintation}`,
+    });
+
+    return relativeDestintation;
   }
 
   public async commit(): Promise<void> {
     const promises = new Array<Promise<void>>();
 
-    for (const [url, destinationController] of this.requests) {
+    for (const [url, destinationPath] of this.requests) {
       promises.push(
         new Promise((resolve, reject) => {
-          const destination = fs.createWriteStream(destinationController.makeFileDestinationForAssetWithUrl(url));
+          const destination = fs.createWriteStream(destinationPath.absolutePath);
           request(url).pipe(destination).on('error', reject).on('finish', resolve);
         }),
       );
