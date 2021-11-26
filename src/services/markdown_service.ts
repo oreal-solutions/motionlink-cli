@@ -329,8 +329,8 @@ export default class MarkdownService {
     let out = '';
 
     for (const block of blocks) {
-      let transformer = this.getTransformerForBlock(block);
-      let markdown = this.getMarkdownForBlock(block, rule, transformer);
+      const transformer = this.getTransformerForBlock(block);
+      const markdown = this.getMarkdownForBlock(block, rule, transformer);
 
       if (out.length === 0) {
         out = `${indent}${markdown}\n`;

@@ -3,6 +3,7 @@
   "rules": {
     "no-console": false,
     "class-name": [true, "allow-leading-underscore"],
-    "max-classes-per-file": [true, 100, "exclude-class-expressions"]
+    "max-classes-per-file": [true, 100, "exclude-class-expressions"],
+    "array-type": false
   }
 }
