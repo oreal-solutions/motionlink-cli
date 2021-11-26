@@ -3,7 +3,7 @@ import { NotionBlock, TemplateRule } from '../models/config_models';
 import { EquationObject, FileObject, MentionObject, TextObject } from '../models/notion_objects';
 import MediaService from './media_service';
 
-function applyAnnotations(
+export function applyAnnotations(
   text: string,
   annotations: {
     bold: boolean;
