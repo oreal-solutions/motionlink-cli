@@ -7,9 +7,9 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
+    "moduleResolution": "node",
+    "declaration": true,
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

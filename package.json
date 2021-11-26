@@ -43,11 +43,13 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.22",
+    "@types/deep-equal-in-any-order": "^1.0.1",
     "@types/mocha": "^9.0.0",
     "@types/mustache": "^4.1.2",
     "@types/request": "^2.48.7",
     "chai": "^4.3.4",
     "cross-env": "^7.0.3",
+    "deep-equal-in-any-order": "^1.1.15",
     "mocha": "^9.1.2",
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
