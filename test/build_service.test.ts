@@ -20,6 +20,7 @@ import {
   setMockedFileSystemService,
   setMockedMustacheService,
   setMockedNotionService,
+  setMockedPostProcessingService,
 } from './mocking_utils';
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 
@@ -133,7 +134,10 @@ describe('TemplateRuleOutputWriter tests', () => {
 
         setMockedFileSystemService({
           doesFolderExist: (_) => true,
-          writeStringToFile: (_, __) => undefined,
+        });
+
+        setMockedPostProcessingService({
+          submit: (_, __, ___) => undefined,
         });
       });
 
@@ -146,14 +150,27 @@ describe('TemplateRuleOutputWriter tests', () => {
           },
         });
 
-        await instance.write({ abc: 'abc' } as any, {
-          template: '',
-          outDir: '',
-          uses: {} as any,
-          alsoUses: [],
-        });
+        await instance.write(
+          {
+            abc: 'abc',
+            data: {
+              id: 'abc',
+            },
+          } as any,
+          {
+            template: '',
+            outDir: '',
+            uses: {} as any,
+            alsoUses: [],
+          },
+        );
 
-        expect(passedPage).to.deep.equal({ abc: 'abc' });
+        expect(passedPage).to.deep.equal({
+          abc: 'abc',
+          data: {
+            id: 'abc',
+          },
+        });
       });
 
       it('Should pass the contents of the file in pageTemplateRule.template as the template to the MustacheService', async () => {
@@ -165,12 +182,19 @@ describe('TemplateRuleOutputWriter tests', () => {
           },
         });
 
-        await instance.write({} as any, {
-          template: 'public/test.html',
-          outDir: '',
-          uses: {} as any,
-          alsoUses: [],
-        });
+        await instance.write(
+          {
+            data: {
+              id: 'abc',
+            },
+          } as any,
+          {
+            template: 'public/test.html',
+            outDir: '',
+            uses: {} as any,
+            alsoUses: [],
+          },
+        );
 
         expect(passedTemplate).to.deep.equal('contents of public/test.html');
       });
@@ -198,18 +222,29 @@ describe('TemplateRuleOutputWriter tests', () => {
 
           setMockedFileSystemService({
             doesFolderExist: (_) => true,
-            writeStringToFile: (data, path) => {
+          });
+
+          setMockedPostProcessingService({
+            submit: (data, path, ___) => {
               writtenData = data;
               writtenToPath = path;
             },
           });
 
-          await instance.write({ _title: 'index' } as any, {
-            template: 'public/test.html',
-            outDir: 'out',
-            uses: {} as any,
-            alsoUses: [],
-          });
+          await instance.write(
+            {
+              _title: 'index',
+              data: {
+                id: 'abc',
+              },
+            } as any,
+            {
+              template: 'public/test.html',
+              outDir: 'out',
+              uses: {} as any,
+              alsoUses: [],
+            },
+          );
 
           expect(writtenData).to.equal('populated contents');
           expect(writtenToPath).to.equal('out/index.html');
@@ -225,15 +260,26 @@ describe('TemplateRuleOutputWriter tests', () => {
             createFolder: (folder) => {
               createdFolder = folder;
             },
-            writeStringToFile: (_, __) => undefined,
           });
 
-          await instance.write({ _title: 'index' } as any, {
-            template: 'public/test.html',
-            outDir: 'out',
-            uses: {} as any,
-            alsoUses: [],
+          setMockedPostProcessingService({
+            submit: (_, __, ___) => undefined,
           });
+
+          await instance.write(
+            {
+              _title: 'index',
+              data: {
+                id: 'abc',
+              },
+            } as any,
+            {
+              template: 'public/test.html',
+              outDir: 'out',
+              uses: {} as any,
+              alsoUses: [],
+            },
+          );
 
           expect(createdFolder).to.equal('out');
         });
@@ -245,18 +291,29 @@ describe('TemplateRuleOutputWriter tests', () => {
           setMockedFileSystemService({
             doesFolderExist: (_) => false,
             createFolder: (_) => undefined,
-            writeStringToFile: (data, path) => {
+          });
+
+          setMockedPostProcessingService({
+            submit: (data, path, ___) => {
               writtenData = data;
               writtenToPath = path;
             },
           });
 
-          await instance.write({ _title: 'index' } as any, {
-            template: 'public/test.html',
-            outDir: 'out',
-            uses: {} as any,
-            alsoUses: [],
-          });
+          await instance.write(
+            {
+              _title: 'index',
+              data: {
+                id: 'abc',
+              },
+            } as any,
+            {
+              template: 'public/test.html',
+              outDir: 'out',
+              uses: {} as any,
+              alsoUses: [],
+            },
+          );
 
           expect(writtenData).to.equal('populated contents');
           expect(writtenToPath).to.equal('out/index.html');

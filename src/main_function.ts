@@ -3,6 +3,7 @@ import { TemplateRule } from './models/config_models';
 import AssociationsService from './services/associations_service';
 import { newBuildService } from './services/build_service';
 import MediaService from './services/media_service';
+import PostProcessingService from './services/post_processing_service';
 
 export default async function main() {
   if (process.argv.length < 3) throw new Error('Too few arguments passed');
@@ -14,4 +15,5 @@ export default async function main() {
 
   await newBuildService().build(templateRules, dbAssociations);
   await MediaService.instance.commit();
+  PostProcessingService.instance.flush();
 }

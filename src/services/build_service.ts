@@ -6,6 +6,7 @@ import FileSystemService from './file_system_service';
 import MustacheService from './mustache_service';
 import MarkdownService from './markdown_service';
 import MediaService from './media_service';
+import PostProcessingService from './post_processing_service';
 
 export interface BuildService {
   build: (templateRules: TemplateRule[], databaseAssociations: NotionDatabaseAssociation[]) => Promise<void>;
@@ -93,7 +94,7 @@ export class TemplateRuleOutputWriter {
       page._title +
       this.fileExtensionFinder!.findFileExtensionOf(pageTemplateRule.template);
 
-    FileSystemService.instance.writeStringToFile(out, outFilePath);
+    PostProcessingService.instance.submit(out, outFilePath, page.data.id);
   }
 
   public setFileExtensionFinder(fileExtensionFinder: FileExtensionFinder) {

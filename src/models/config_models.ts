@@ -11,7 +11,7 @@ export type NotionPage = {
   blocks: NotionBlock[];
 
   /**
-   * This value should be retrieved by users in map.
+   * This value should be retrieved by users in DatabaseRule.map.
    * Default is page id.
    */
   _title?: string,

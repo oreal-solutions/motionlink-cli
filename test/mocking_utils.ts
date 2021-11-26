@@ -22,6 +22,7 @@ import FileSystemService from '../src/services/file_system_service';
 import MediaService from '../src/services/media_service';
 import MustacheService from '../src/services/mustache_service';
 import NotionService from '../src/services/notion_service';
+import PostProcessingService from '../src/services/post_processing_service';
 
 export function setMockedFileSystemService(mock: {
   readFileAsString?: (path: string) => string;
@@ -56,6 +57,13 @@ export function setMockedMediaService(mock: {
   commit?: () => Promise<void>;
 }) {
   MediaService.setMockedInstance(mock as MediaService);
+}
+
+export function setMockedPostProcessingService(mock: {
+  submit?: (content: string, pgPage: string, pgId: string) => void;
+  flush?: () => void;
+}) {
+  PostProcessingService.setMockedInstance(mock as PostProcessingService);
 }
 
 export function asMockedFileExtensionFinder(mock: { findFileExtensionOf: (path: string) => string }) {
