@@ -43,22 +43,22 @@ describe('MediaDestinationController tests', () => {
         expect(createdFolder).to.equal(path);
       }
 
-      it("Should return 'abc/videos/file1.mp4' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
+      it("Should return 'videos/file1.mp4' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
         const url =
           'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256';
-        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('abc/videos/file1.mp4');
+        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('videos/file1.mp4');
       });
 
-      it("Should return 'abc/audio/file1.mp3' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
+      it("Should return 'audio/file1.mp3' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
         const url =
           'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256';
-        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('abc/audio/file1.mp3');
+        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('audio/file1.mp3');
       });
 
-      it("Should return 'abc/other_media/file1' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
+      it("Should return 'other_media/file1' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
         const url =
           'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1?X-Amz-Algorithm=AWS4-HMAC-SHA256';
-        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('abc/other_media/file1');
+        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('other_media/file1');
       });
 
       it("Should create folder 'abc/videos' if not exists when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
@@ -91,10 +91,10 @@ describe('MediaDestinationController tests', () => {
     describe("When instance is created with TemplateRule that has 'aaa' as outDir", () => {
       const instance = makeInstanceWithTemplateOutDir('aaa');
 
-      it("Should return 'aaa/images/file1.png' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
+      it("Should return 'images/file1.png' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
         const url =
           'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256';
-        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('aaa/images/file1.png');
+        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('images/file1.png');
       });
     });
   });

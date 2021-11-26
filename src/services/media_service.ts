@@ -64,7 +64,7 @@ export class MediaDestinationController {
     if (!FileSystemService.instance.doesFolderExist(parentFolder))
       FileSystemService.instance.createFolder(parentFolder);
 
-    return `${parentFolder}/${filename}`;
+    return `${subfolderName}/${filename}`;
   }
 
   private getSubfolderNameForUrl(url: string): string {
