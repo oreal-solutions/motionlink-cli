@@ -538,9 +538,9 @@ describe('ObjectTransformers tests', () => {
           };
         }
 
-        it("Should return '\\(abc\\)' when expression is 'abc'", () => {
+        it("Should return '$abc$' when expression is 'abc'", () => {
           const object = makeEquationObject('abc');
-          expect(ObjectTransformers.equation(object)).to.equal('\\(abc\\)');
+          expect(ObjectTransformers.equation(object)).to.equal('$abc$');
         });
       });
 
@@ -564,9 +564,9 @@ describe('ObjectTransformers tests', () => {
           };
         }
 
-        it("Should return '[\\(abc\\)](example.com)' when expression is 'abc'", () => {
+        it("Should return '[$abc$](example.com)' when expression is 'abc'", () => {
           const object = makeEquationObject('abc', 'example.com');
-          expect(ObjectTransformers.equation(object)).to.equal('[\\(abc\\)](example.com)');
+          expect(ObjectTransformers.equation(object)).to.equal('[$abc$](example.com)');
         });
       });
     });
@@ -594,7 +594,7 @@ describe('ObjectTransformers tests', () => {
         };
       }
 
-      it("Should return '**[\\(abc\\)](example.com)**' when only the bold annotation is true", () => {
+      it("Should return '**[$abc$](example.com)**' when only the bold annotation is true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: true,
@@ -607,10 +607,10 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('**[\\(abc\\)](example.com)**');
+        expect(ObjectTransformers.equation(object)).to.equal('**[$abc$](example.com)**');
       });
 
-      it("Should return '__[\\(abc\\)](example.com)__' when only the italic annotation is true", () => {
+      it("Should return '__[$abc$](example.com)__' when only the italic annotation is true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: false,
@@ -623,10 +623,10 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('__[\\(abc\\)](example.com)__');
+        expect(ObjectTransformers.equation(object)).to.equal('__[$abc$](example.com)__');
       });
 
-      it("Should return '~~[\\(abc\\)](example.com)~~' when only the strikethrough annotation is true", () => {
+      it("Should return '~~[$abc$](example.com)~~' when only the strikethrough annotation is true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: false,
@@ -639,10 +639,10 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('~~[\\(abc\\)](example.com)~~');
+        expect(ObjectTransformers.equation(object)).to.equal('~~[$abc$](example.com)~~');
       });
 
-      it("Should return '`[\\(abc\\)](example.com)`' when only the code annotation is true", () => {
+      it("Should return '`[$abc$](example.com)`' when only the code annotation is true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: false,
@@ -655,10 +655,10 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('`[\\(abc\\)](example.com)`');
+        expect(ObjectTransformers.equation(object)).to.equal('`[$abc$](example.com)`');
       });
 
-      it("Should return '**__~~`[\\(abc\\)](example.com)`~~__**' when the bold, italic, strikethrough, and code annotations are true", () => {
+      it("Should return '**__~~`[$abc$](example.com)`~~__**' when the bold, italic, strikethrough, and code annotations are true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: true,
@@ -671,7 +671,7 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('**__~~`[\\(abc\\)](example.com)`~~__**');
+        expect(ObjectTransformers.equation(object)).to.equal('**__~~`[$abc$](example.com)`~~__**');
       });
     });
   });

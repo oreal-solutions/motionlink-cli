@@ -95,7 +95,7 @@ export const ObjectTransformers = {
   },
 
   equation: (object: EquationObject): string => {
-    let out = `\\(${object.equation.expression}\\)`;
+    let out = `$${object.equation.expression}$`;
     if (object.href) out = `[${out}](${object.href})`;
 
     return applyAnnotations(out, object.annotations);
