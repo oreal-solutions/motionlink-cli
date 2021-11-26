@@ -1,6 +1,3 @@
-hello
-{{data.last_edited_time}}
+{{{otherData.titleMarkdown}}}
 
------DUMP------
-{{otherData.test}}
-{{{otherData.stringDump}}}
+{{{otherData.content}}}
