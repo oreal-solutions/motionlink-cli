@@ -25,7 +25,7 @@ export type NotionDatabase = {
 export type Context = {
   // Object of other Notiondatabase objects
   others: object;
-  genMarkdownForPage: (notionPage: NotionPage) => string;
+  genMarkdownForBlocks: (blocks: NotionBlock[]) => string;
   fetchMedia: (mediaUrl: string) => string;
 };
 

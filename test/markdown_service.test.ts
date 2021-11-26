@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha';
+import { describe, it, setup } from 'mocha';
 import { expect } from 'chai';
-import { BlockTransformers, getMedia, ObjectTransformers } from '../src/services/markdown_service';
+import MarkdownService, { BlockTransformers, getMedia, ObjectTransformers } from '../src/services/markdown_service';
 import {
   DatabaseMentionObject,
   DateObject,
@@ -14,6 +14,7 @@ import {
 } from '../src/models/notion_objects';
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 import { setMockedMediaService } from './mocking_utils';
+import { NotionBlock } from '../src/models/config_models';
 
 describe('ObjectTransformers tests', () => {
   describe('text', () => {
@@ -1368,6 +1369,86 @@ describe('getMedia tests', () => {
         src: 'example.com abc',
         captionMarkdown: 'abc',
       });
+    });
+  });
+});
+
+describe('MarkdownService tests', () => {
+  describe('genMarkdownForBlocks(blocks)', () => {
+    setup(() => {
+      BlockTransformers.heading_1 = (block, _) => `${block.type} content`;
+      BlockTransformers.paragraph = (block, _) => `${block.type} content`;
+    });
+
+    it('Should add an empty line between blocks', () => {
+      const blocks: NotionBlock[] = [
+        {
+          data: {
+            type: 'heading_1',
+          } as any,
+          children: [],
+        },
+
+        {
+          data: {
+            type: 'paragraph',
+          } as any,
+          children: [],
+        },
+      ];
+
+      expect(MarkdownService.instance.genMarkdownForBlocks(blocks, {} as any)).to.equal(
+        'heading_1 content\n\nparagraph content\n',
+      );
+    });
+
+    it('Should indent child blocks with 4 spaces', () => {
+      const blocks: NotionBlock[] = [
+        {
+          data: {
+            type: 'paragraph',
+          } as any,
+          children: [
+            {
+              data: {
+                type: 'heading_1',
+              } as any,
+              children: [
+                {
+                  data: {
+                    type: 'paragraph',
+                  } as any,
+                  children: [],
+                },
+              ],
+            },
+
+            {
+              data: {
+                type: 'heading_1',
+              } as any,
+              children: [],
+            },
+          ],
+        },
+      ];
+
+      expect(MarkdownService.instance.genMarkdownForBlocks(blocks, {} as any)).to.equal(
+        'paragraph content\n\n    heading_1 content\n\n        paragraph content\n\n    heading_1 content\n',
+      );
+    });
+
+    it('Should insert an "Unknown Block: abc" when given a block of type "abc", i.e a block whose transformer is not in BlockTrasformers', () => {
+      const blocks: NotionBlock[] = [
+        {
+          data: {
+            type: 'abc',
+          } as any,
+          children: [],
+        },
+      ];
+
+      expect(MarkdownService.instance.genMarkdownForBlocks(blocks, {} as any)).to.equal('Unknown Block: abc\n');
     });
   });
 });

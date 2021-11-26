@@ -260,7 +260,7 @@ export class TemplateRuleBuilder {
   public async build(rule: TemplateRule, databaseAssociations: NotionDatabaseAssociation[]): Promise<void> {
     const ctx: Context = {
       others: [],
-      genMarkdownForPage: MarkdownService.instance.genMarkdownForPage,
+      genMarkdownForBlocks: (blocks) => MarkdownService.instance.genMarkdownForBlocks(blocks, rule),
       fetchMedia: (mediaUrl: string) => MediaService.instance.stageFetchRequest(mediaUrl, rule),
     };
 

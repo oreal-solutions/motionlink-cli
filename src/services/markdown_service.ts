@@ -1,5 +1,5 @@
 import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
-import { NotionPage, TemplateRule } from '../models/config_models';
+import { NotionBlock, TemplateRule } from '../models/config_models';
 import { EquationObject, FileObject, MentionObject, TextObject } from '../models/notion_objects';
 import MediaService from './media_service';
 
@@ -106,6 +106,8 @@ export const ObjectTransformers = {
   },
 };
 
+declare type BlockTransformerType = (block: GetBlockResponse, rule: TemplateRule) => string;
+
 /**
  * The block transformers.
  *
@@ -114,7 +116,7 @@ export const ObjectTransformers = {
  *
  * These can be overwritten to provide custom implementations.
  */
-export const BlockTransformers: Record<string, (block: GetBlockResponse, rule: TemplateRule) => string> = {
+export const BlockTransformers: Record<string, BlockTransformerType> = {
   paragraph: (block: GetBlockResponse): string => {
     if (block.type === 'paragraph') {
       return transformAllObjectsWithPrefix(block.paragraph.text, '');
@@ -319,10 +321,52 @@ export const BlockTransformers: Record<string, (block: GetBlockResponse, rule: T
 };
 
 export default class MarkdownService {
-  public genMarkdownForPage(page: NotionPage): string {
-    // TODO: Implement
-    // NB: implements indentation algorithm.
-    return '';
+  public genMarkdownForBlocks(blocks: NotionBlock[], rule: TemplateRule): string {
+    return this.genMarkdownForBlocksWithIndent(blocks, rule, '');
+  }
+
+  public genMarkdownForBlocksWithIndent(blocks: NotionBlock[], rule: TemplateRule, indent: string): string {
+    let out = '';
+
+    for (const block of blocks) {
+      let transformer = this.getTransformerForBlock(block);
+      let markdown = this.getMarkdownForBlock(block, rule, transformer);
+
+      if (out.length === 0) {
+        out = `${indent}${markdown}\n`;
+      } else {
+        out = `${out}\n${indent}${markdown}\n`;
+      }
+
+      const childrenMarkdown = this.genMarkdownForBlocksWithIndent(block.children, rule, `${indent}    `).trimEnd();
+      if (childrenMarkdown.length !== 0) {
+        out = `${out}\n${childrenMarkdown}\n`;
+      }
+    }
+
+    return out;
+  }
+
+  private getTransformerForBlock(block: NotionBlock): BlockTransformerType | undefined {
+    for (const blockType of Object.keys(BlockTransformers)) {
+      if (blockType === block.data.type) {
+        return BlockTransformers[blockType];
+      }
+    }
+
+    return undefined;
+  }
+
+  private getMarkdownForBlock(
+    block: NotionBlock,
+    rule: TemplateRule,
+    transformer: BlockTransformerType | undefined,
+  ): string {
+    if (transformer) {
+      return transformer(block.data, rule);
+    } else {
+      return `Unknown Block: ${block.data.type}`;
+    }
   }
 
   private static _instance: MarkdownService;
