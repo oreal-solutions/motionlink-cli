@@ -716,7 +716,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.paragraph(block)).to.equal('abc');
+      expect(BlockTransformers.paragraph(block, {} as any)).to.equal('abc');
     });
   });
 
@@ -737,7 +737,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.heading_1(block)).to.equal('# abc');
+      expect(BlockTransformers.heading_1(block, {} as any)).to.equal('# abc');
     });
   });
 
@@ -758,7 +758,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.heading_2(block)).to.equal('## abc');
+      expect(BlockTransformers.heading_2(block, {} as any)).to.equal('## abc');
     });
   });
 
@@ -779,7 +779,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.heading_3(block)).to.equal('### abc');
+      expect(BlockTransformers.heading_3(block, {} as any)).to.equal('### abc');
     });
   });
 
@@ -800,12 +800,12 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.bulleted_list_item(block)).to.equal('- abc');
+      expect(BlockTransformers.bulleted_list_item(block, {} as any)).to.equal('- abc');
     });
   });
 
   describe('numbered_list_item', () => {
-    it("Should return '2. abc' when ObjectTransformers.transform_all returns 'abc' and index is 2", () => {
+    it("Should return '1. abc' when ObjectTransformers.transform_all returns 'abc'", () => {
       ObjectTransformers.transform_all = (_) => 'abc';
 
       const block: GetBlockResponse = {
@@ -821,7 +821,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.numbered_list_item(block, 2)).to.equal('2. abc');
+      expect(BlockTransformers.numbered_list_item(block, {} as any)).to.equal('1. abc');
     });
   });
 
@@ -843,7 +843,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.to_do(block)).to.equal('- [ ] abc');
+      expect(BlockTransformers.to_do(block, {} as any)).to.equal('- [ ] abc');
     });
 
     it("Should return '- [X] abc' when ObjectTransformers.transform_all returns 'abc' and checked is true", () => {
@@ -863,7 +863,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.to_do(block)).to.equal('- [X] abc');
+      expect(BlockTransformers.to_do(block, {} as any)).to.equal('- [X] abc');
     });
   });
 
@@ -882,7 +882,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.toggle(block)).to.equal('abc');
+      expect(BlockTransformers.toggle(block, {} as any)).to.equal('abc');
     });
   });
 
@@ -901,7 +901,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.child_page(block)).to.equal('[abc](https://www.notion.so/efghijklm)');
+      expect(BlockTransformers.child_page(block, {} as any)).to.equal('[abc](https://www.notion.so/efghijklm)');
     });
   });
 
@@ -920,7 +920,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.child_database(block)).to.equal('[abc](https://www.notion.so/efghijklm)');
+      expect(BlockTransformers.child_database(block, {} as any)).to.equal('[abc](https://www.notion.so/efghijklm)');
     });
   });
 
@@ -942,7 +942,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.embed(block)).to.equal("[abc](example.com ':include')");
+      expect(BlockTransformers.embed(block, {} as any)).to.equal("[abc](example.com ':include')");
     });
   });
 
@@ -1087,7 +1087,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.bookmark(block)).to.equal('[example.com](example.com)');
+      expect(BlockTransformers.bookmark(block, {} as any)).to.equal('[example.com](example.com)');
     });
   });
 
@@ -1113,7 +1113,7 @@ describe('BlockTransformers tests', () => {
           archived: false,
         };
 
-        expect(BlockTransformers.callout(block)).to.equal('> 😉 abc');
+        expect(BlockTransformers.callout(block, {} as any)).to.equal('> 😉 abc');
       });
     });
 
@@ -1140,7 +1140,7 @@ describe('BlockTransformers tests', () => {
           archived: false,
         };
 
-        expect(BlockTransformers.callout(block)).to.equal('> abc');
+        expect(BlockTransformers.callout(block, {} as any)).to.equal('> abc');
       });
     });
 
@@ -1168,7 +1168,7 @@ describe('BlockTransformers tests', () => {
           archived: false,
         };
 
-        expect(BlockTransformers.callout(block)).to.equal('> abc');
+        expect(BlockTransformers.callout(block, {} as any)).to.equal('> abc');
       });
     });
 
@@ -1190,7 +1190,7 @@ describe('BlockTransformers tests', () => {
           archived: false,
         };
 
-        expect(BlockTransformers.callout(block)).to.equal('> abc');
+        expect(BlockTransformers.callout(block, {} as any)).to.equal('> abc');
       });
     });
   });
@@ -1212,7 +1212,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.quote(block)).to.equal('> abc');
+      expect(BlockTransformers.quote(block, {} as any)).to.equal('> abc');
     });
   });
 
@@ -1233,7 +1233,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.equation(block)).to.equal('$$abc$$');
+      expect(BlockTransformers.equation(block, {} as any)).to.equal('$$abc$$');
     });
   });
 
@@ -1250,7 +1250,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.divider(block)).to.equal('---');
+      expect(BlockTransformers.divider(block, {} as any)).to.equal('---');
     });
   });
 
@@ -1267,7 +1267,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.table_of_contents(block)).to.equal('');
+      expect(BlockTransformers.table_of_contents(block, {} as any)).to.equal('');
     });
   });
 
@@ -1284,7 +1284,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.breadcrumb(block)).to.equal('');
+      expect(BlockTransformers.breadcrumb(block, {} as any)).to.equal('');
     });
   });
 
@@ -1306,7 +1306,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.code(block)).to.equal('```java\nabc\n```');
+      expect(BlockTransformers.code(block, {} as any)).to.equal('```java\nabc\n```');
     });
   });
 
@@ -1323,7 +1323,7 @@ describe('BlockTransformers tests', () => {
         archived: false,
       };
 
-      expect(BlockTransformers.unsupported(block)).to.equal('Unsupported');
+      expect(BlockTransformers.unsupported(block, {} as any)).to.equal('Unsupported');
     });
   });
 });

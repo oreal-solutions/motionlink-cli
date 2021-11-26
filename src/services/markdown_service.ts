@@ -114,7 +114,7 @@ export const ObjectTransformers = {
  *
  * These can be overwritten to provide custom implementations.
  */
-export const BlockTransformers = {
+export const BlockTransformers: Record<string, (block: GetBlockResponse, rule: TemplateRule) => string> = {
   paragraph: (block: GetBlockResponse): string => {
     if (block.type === 'paragraph') {
       return transformAllObjectsWithPrefix(block.paragraph.text, '');
@@ -155,9 +155,9 @@ export const BlockTransformers = {
     return '';
   },
 
-  numbered_list_item: (block: GetBlockResponse, index: number): string => {
+  numbered_list_item: (block: GetBlockResponse, _): string => {
     if (block.type === 'numbered_list_item') {
-      return transformAllObjectsWithPrefix(block.numbered_list_item.text, `${index}. `);
+      return transformAllObjectsWithPrefix(block.numbered_list_item.text, `1. `);
     }
 
     return '';
