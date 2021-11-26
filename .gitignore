@@ -1,5 +1,4 @@
 node_modules
 /lib
 
-# Public folder in example
-public
+example_project/*
