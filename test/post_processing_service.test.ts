@@ -46,25 +46,25 @@ describe('PostProcessingService tests', () => {
       testSubmitAndFlush({
         inPages: [
           {
-            path: 'page/A',
+            path: 'pageA',
             contents: 'Link to B is :::pathTo:::abc:::',
             id: 'page-A-id',
           },
 
           {
-            path: 'page/B',
+            path: 'pageB',
             contents: 'This is Page B',
             id: 'abc',
           },
         ],
         expectedOutPages: [
           {
-            path: 'page/A',
-            contents: 'Link to B is page/B',
+            path: 'pageA',
+            contents: 'Link to B is pageB',
           },
 
           {
-            path: 'page/B',
+            path: 'pageB',
             contents: 'This is Page B',
           },
         ],
@@ -75,26 +75,26 @@ describe('PostProcessingService tests', () => {
       testSubmitAndFlush({
         inPages: [
           {
-            path: 'page/A',
+            path: 'pageA',
             contents: 'This is Page A',
             id: 'efg',
           },
 
           {
-            path: 'page/B',
+            path: 'pageB',
             contents: 'Link to A is :::pathTo:::efg:::',
             id: 'page-B-id',
           },
         ],
         expectedOutPages: [
           {
-            path: 'page/A',
+            path: 'pageA',
             contents: 'This is Page A',
           },
 
           {
-            path: 'page/B',
-            contents: 'Link to A is page/A',
+            path: 'pageB',
+            contents: 'Link to A is pageA',
           },
         ],
       });
@@ -104,36 +104,36 @@ describe('PostProcessingService tests', () => {
       testSubmitAndFlush({
         inPages: [
           {
-            path: 'page/B',
+            path: 'pageB',
             contents: 'This is Page B',
             id: 'abc',
           },
 
           {
-            path: 'page/C',
+            path: 'pageC',
             contents: 'Link to B is :::pathTo:::abc::: and link to D is :::pathTo:::efg:::',
             id: 'page-C-id',
           },
 
           {
-            path: 'page/D',
+            path: 'pageD',
             contents: 'This is Page D',
             id: 'efg',
           },
         ],
         expectedOutPages: [
           {
-            path: 'page/B',
+            path: 'pageB',
             contents: 'This is Page B',
           },
 
           {
-            path: 'page/C',
-            contents: 'Link to B is page/B and link to D is page/D',
+            path: 'pageC',
+            contents: 'Link to B is pageB and link to D is pageD',
           },
 
           {
-            path: 'page/D',
+            path: 'pageD',
             contents: 'This is Page D',
           },
         ],
@@ -144,14 +144,14 @@ describe('PostProcessingService tests', () => {
       testSubmitAndFlush({
         inPages: [
           {
-            path: 'page/D',
+            path: 'pageD',
             contents: 'This is Page D',
             id: 'page-D-id',
           },
         ],
         expectedOutPages: [
           {
-            path: 'page/D',
+            path: 'pageD',
             contents: 'This is Page D',
           },
         ],
@@ -162,17 +162,127 @@ describe('PostProcessingService tests', () => {
       testSubmitAndFlush({
         inPages: [
           {
-            path: 'page/E',
+            path: 'pageE',
             contents: 'Link to page F is :::pathTo:::page-F-id:::',
             id: 'page-E-id',
           },
         ],
         expectedOutPages: [
           {
-            path: 'page/E',
+            path: 'pageE',
             contents: 'Link to page F is :::pathTo:::page-F-id:::',
           },
         ],
+      });
+    });
+
+    describe('Resolving page paths to relative links', () => {
+      function testResolvesPathsToRelativeLinks(args: { referenceTo: string; in: string; expectedLink: string }) {
+        testSubmitAndFlush({
+          inPages: [
+            {
+              path: args.in,
+              contents: 'Link to page B is :::pathTo:::page-B-id:::',
+              id: 'page-A-id',
+            },
+
+            {
+              path: args.referenceTo,
+              contents: 'This is page B',
+              id: 'page-B-id',
+            },
+          ],
+          expectedOutPages: [
+            {
+              path: args.in,
+              contents: `Link to page B is ${args.expectedLink}`,
+            },
+
+            {
+              path: args.referenceTo,
+              contents: 'This is page B',
+            },
+          ],
+        });
+      }
+
+      it("Should resolve reference to './pageB' in './pageA' to './pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: './pageB',
+          in: './pageA',
+          expectedLink: './pageB',
+        });
+      });
+
+      it("Should resolve reference to 'pageB' in 'pageA' to 'pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: 'pageB',
+          in: 'pageA',
+          expectedLink: 'pageB',
+        });
+      });
+
+      it("Should resolve reference to 'public/pageB' in 'public/pageA' to 'pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: 'public/pageB',
+          in: 'public/pageA',
+          expectedLink: '../pageB',
+        });
+      });
+
+      it("Should resolve reference to 'public/pages/pageB' in 'public/pageA' to '../pages/pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: 'public/pages/pageB',
+          in: 'public/pageA',
+          expectedLink: '../pages/pageB',
+        });
+      });
+
+      it("Should resolve reference to 'public/pageB' in 'public/pages/pageA' to '../pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: 'public/pageB',
+          in: 'public/pages/pageA',
+          expectedLink: '../../pageB',
+        });
+      });
+
+      it("Should resolve reference to 'public/pageB' in 'others/pageA' to '../public/pageB'", () => {
+        testResolvesPathsToRelativeLinks({
+          referenceTo: 'public/pageB',
+          in: 'others/pageA',
+          expectedLink: '../../public/pageB',
+        });
+      });
+    });
+
+    describe('URL encoding links', () => {
+      it("Should encode relative page path './page 2\".md' to './page%202%22.md'", () => {
+        testSubmitAndFlush({
+          inPages: [
+            {
+              path: './page 2".md',
+              contents: 'This is Page A',
+              id: 'efg',
+            },
+
+            {
+              path: 'pageB',
+              contents: 'Link to A is :::pathTo:::efg:::',
+              id: 'page-B-id',
+            },
+          ],
+          expectedOutPages: [
+            {
+              path: './page 2".md',
+              contents: 'This is Page A',
+            },
+
+            {
+              path: 'pageB',
+              contents: 'Link to A is ./page%202%22.md',
+            },
+          ],
+        });
       });
     });
   });

@@ -1,4 +1,5 @@
 import FileSystemService from './file_system_service';
+import { relative as relativePath } from 'path';
 
 /**
  * Buffers a file write and only writes it to the file system once all the links
@@ -49,13 +50,23 @@ export default class PostProcessingService {
   public flush(): void {
     for (const pagePath of this.pagePaths) {
       for (const pageWithLink of this.pagesWithLinks) {
-        pageWithLink.data = pageWithLink.data.replace(`:::pathTo:::${pagePath.pageId}:::`, pagePath.path);
+        const link = encodeURI(this.getRelativeLink(pageWithLink.path, pagePath.path));
+        pageWithLink.data = pageWithLink.data.replace(`:::pathTo:::${pagePath.pageId}:::`, link);
       }
     }
 
     for (const page of this.pagesWithLinks) {
       FileSystemService.instance.writeStringToFile(page.data, page.path);
     }
+  }
+
+  private getRelativeLink(from: string, to: string): string {
+    if (to.indexOf('/') < 0 || to.startsWith('./')) {
+      // Path is already relative
+      return to;
+    }
+
+    return relativePath(from, to);
   }
 
   private static _instance: PostProcessingService;
