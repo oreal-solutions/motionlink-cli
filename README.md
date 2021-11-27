@@ -4,8 +4,10 @@ Making it easy to use Notion as a Content Management system for personal website
 
 - [x] Read all page properties
 - [x] Read all page blocks
-- [ ] Generate Markdown from page blocks
+- [x] Generate Markdown from page blocks
 - [x] Read all 'asked for' databases
+
+See example of my personal website [here](https://github.com/bats64mgutsi/personalportfolio).
 
 ## Scripts
 
