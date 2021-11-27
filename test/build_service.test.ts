@@ -386,6 +386,14 @@ describe('BlockChildrenFetcher tests', () => {
 });
 
 describe('DatabaseFetcher tests', () => {
+  const testContext: Context = {
+    genMarkdownForBlocks: (_: NotionBlock[]) => '',
+    others: {},
+    fetchMedia: (_) => {
+      return {} as any;
+    },
+  };
+
   let instance: DatabaseFetcher;
   const fetchDb1Args = {
     databaseRule: {
@@ -400,11 +408,7 @@ describe('DatabaseFetcher tests', () => {
       notionDatabaseId: 'db-1',
       notionIntegrationToken: {} as Token,
     },
-    context: {
-      others: {},
-      genMarkdownForBlocks: (_: NotionBlock[]) => '',
-      fetchMedia: (mediaUrl: string) => '',
-    },
+    context: testContext,
     onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
   };
 
@@ -418,11 +422,7 @@ describe('DatabaseFetcher tests', () => {
       notionDatabaseId: 'db-2',
       notionIntegrationToken: {} as Token,
     },
-    context: {
-      others: {},
-      genMarkdownForBlocks: (_: NotionBlock[]) => '',
-      fetchMedia: (mediaUrl: string) => '',
-    },
+    context: testContext,
     onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
   };
 
@@ -550,11 +550,7 @@ describe('DatabaseFetcher tests', () => {
             notionDatabaseId: 'db-2',
             notionIntegrationToken: {} as Token,
           },
-          context: {
-            others: {},
-            genMarkdownForBlocks: (_: NotionBlock[]) => '',
-            fetchMedia: (mediaUrl: string) => '',
-          },
+          context: testContext,
           onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
         };
 
@@ -603,11 +599,7 @@ describe('DatabaseFetcher tests', () => {
               notionDatabaseId: 'db-2',
               notionIntegrationToken: {} as Token,
             },
-            context: {
-              others: {},
-              genMarkdownForBlocks: (_: NotionBlock[]) => '',
-              fetchMedia: (mediaUrl: string) => '',
-            },
+            context: testContext,
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
 
@@ -659,11 +651,7 @@ describe('DatabaseFetcher tests', () => {
               notionDatabaseId: 'db-2',
               notionIntegrationToken: {} as Token,
             },
-            context: {
-              others: {},
-              genMarkdownForBlocks: (_: NotionBlock[]) => '',
-              fetchMedia: (mediaUrl: string) => '',
-            },
+            context: testContext,
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
 
@@ -718,11 +706,7 @@ describe('DatabaseFetcher tests', () => {
               notionDatabaseId: 'db-2',
               notionIntegrationToken: {} as Token,
             },
-            context: {
-              others: {},
-              genMarkdownForBlocks: (_: NotionBlock[]) => '',
-              fetchMedia: (mediaUrl: string) => '',
-            },
+            context: testContext,
             onPostPageMapping: (page: NotionPage) => new Promise<NotionPage>((resolve, _) => resolve(page)),
           };
 
@@ -749,11 +733,7 @@ describe('DatabaseFetcher tests', () => {
               notionDatabaseId: 'db-2',
               notionIntegrationToken: {} as Token,
             },
-            context: {
-              others: {},
-              genMarkdownForBlocks: (_: NotionBlock[]) => '',
-              fetchMedia: (mediaUrl: string) => '',
-            },
+            context: testContext,
             onPostPageMapping: (page: NotionPage) => {
               postMappedPages.push(page);
               return new Promise<NotionPage>((resolve, _) => resolve(page));
@@ -785,11 +765,7 @@ describe('DatabaseFetcher tests', () => {
               notionDatabaseId: 'db-2',
               notionIntegrationToken: {} as Token,
             },
-            context: {
-              others: {},
-              genMarkdownForBlocks: (_: NotionBlock[]) => '',
-              fetchMedia: (mediaUrl: string) => '',
-            },
+            context: testContext,
             onPostPageMapping: (page: NotionPage) => {
               postMappedPages.push(page);
               return new Promise<NotionPage>((resolve, _) => resolve(page));

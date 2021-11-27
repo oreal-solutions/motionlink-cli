@@ -4,8 +4,7 @@ import { Context, DatabaseRule, NotionBlock, NotionDatabase, NotionPage, Templat
 import NotionService from './notion_service';
 import FileSystemService from './file_system_service';
 import MustacheService from './mustache_service';
-import MarkdownService from './markdown_service';
-import MediaService from './media_service';
+import MarkdownService, { getMedia } from './markdown_service';
 import PostProcessingService from './post_processing_service';
 
 export interface BuildService {
@@ -260,9 +259,9 @@ export class SecondaryDatabasesFetcher {
 export class TemplateRuleBuilder {
   public async build(rule: TemplateRule, databaseAssociations: NotionDatabaseAssociation[]): Promise<void> {
     const ctx: Context = {
-      others: [],
+      others: {},
       genMarkdownForBlocks: (blocks) => MarkdownService.instance.genMarkdownForBlocks(blocks, rule),
-      fetchMedia: (mediaUrl: string) => MediaService.instance.stageFetchRequest(mediaUrl, rule),
+      fetchMedia: (fileObject) => getMedia(fileObject, rule),
     };
 
     ctx.others = await this.secondaryDatabasesFetcher!.fetchAll(rule.alsoUses, databaseAssociations, ctx);
