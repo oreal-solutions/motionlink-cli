@@ -5,7 +5,7 @@
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
-    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register test/**/*.ts",
+    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register test/setup.ts test/**/*.ts",
     "build": "tsc",
     "format": "prettier --write \"*/**/*.tsx\"",
     "lint": "tslint -p tsconfig.json",

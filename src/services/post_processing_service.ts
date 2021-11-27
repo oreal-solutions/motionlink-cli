@@ -1,5 +1,6 @@
 import FileSystemService from './file_system_service';
 import { relative as relativePath } from 'path';
+import { getLogger } from '../logger';
 
 /**
  * Buffers a file write and only writes it to the file system once all the links
@@ -44,6 +45,7 @@ export default class PostProcessingService {
       });
     } else {
       FileSystemService.instance.writeStringToFile(content, pgPath);
+      getLogger().logPageFlushed(pgPath);
     }
   }
 
@@ -57,6 +59,7 @@ export default class PostProcessingService {
 
     for (const page of this.pagesWithLinks) {
       FileSystemService.instance.writeStringToFile(page.data, page.path);
+      getLogger().logPageFlushed(page.path);
     }
   }
 
