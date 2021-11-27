@@ -226,15 +226,15 @@ describe('PostProcessingService tests', () => {
         testResolvesPathsToRelativeLinks({
           referenceTo: 'public/pageB',
           in: 'public/pageA',
-          expectedLink: '../pageB',
+          expectedLink: 'pageB',
         });
       });
 
-      it("Should resolve reference to 'public/pages/pageB' in 'public/pageA' to '../pages/pageB'", () => {
+      it("Should resolve reference to 'public/pages/pageB' in 'public/pageA' to 'pages/pageB'", () => {
         testResolvesPathsToRelativeLinks({
           referenceTo: 'public/pages/pageB',
           in: 'public/pageA',
-          expectedLink: '../pages/pageB',
+          expectedLink: 'pages/pageB',
         });
       });
 
@@ -242,15 +242,15 @@ describe('PostProcessingService tests', () => {
         testResolvesPathsToRelativeLinks({
           referenceTo: 'public/pageB',
           in: 'public/pages/pageA',
-          expectedLink: '../../pageB',
+          expectedLink: '../pageB',
         });
       });
 
-      it("Should resolve reference to 'public/pageB' in 'others/pageA' to '../public/pageB'", () => {
+      it("Should resolve reference to 'public/pageB' in 'others/pageA' to 'public/pageB'", () => {
         testResolvesPathsToRelativeLinks({
           referenceTo: 'public/pageB',
           in: 'others/pageA',
-          expectedLink: '../../public/pageB',
+          expectedLink: 'public/pageB',
         });
       });
     });

@@ -1,6 +1,6 @@
 import * as pathUtils from 'path';
 import * as urlUtils from 'url';
-import * as request from 'request';
+import request from 'request';
 import * as fs from 'fs';
 
 import { TemplateRule } from '../models/config_models';

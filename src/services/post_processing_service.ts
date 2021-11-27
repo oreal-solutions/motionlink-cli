@@ -1,5 +1,5 @@
 import FileSystemService from './file_system_service';
-import { relative as relativePath } from 'path';
+import getRelativePath from 'get-relative-path';
 import { getLogger } from '../logger';
 
 /**
@@ -69,7 +69,7 @@ export default class PostProcessingService {
       return to;
     }
 
-    return relativePath(from, to);
+    return getRelativePath(from, to);
   }
 
   private static _instance: PostProcessingService;
