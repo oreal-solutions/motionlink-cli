@@ -677,7 +677,7 @@ describe('ObjectTransformers tests', () => {
   });
 
   describe('transform_all', () => {
-    it('Should transform allobjects with the text, mention, and equation ObjectTransfromers and merge their outputs', () => {
+    it('Should transform all objects with the text, mention, and equation ObjectTransfromers and merge their outputs', () => {
       ObjectTransformers.text = (_) => 'text object, ';
       ObjectTransformers.mention = (_) => 'mention object, ';
       ObjectTransformers.equation = (_) => 'equation object';
@@ -697,6 +697,16 @@ describe('ObjectTransformers tests', () => {
       expect(ObjectTransformers.transform_all(objects)).to.equal('text object, mention object, equation object');
     });
   });
+
+  it('Should return "" when objects is undefined', () => {
+    const objects: any = undefined;
+    expect(ObjectTransformers.transform_all(objects)).to.equal('');
+  });
+});
+
+it('Should "" when  objects is null', () => {
+  const objects: any = null;
+  expect(ObjectTransformers.transform_all(objects)).to.equal('');
 });
 
 describe('BlockTransformers tests', () => {

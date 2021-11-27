@@ -102,7 +102,7 @@ export const ObjectTransformers = {
   },
 
   transform_all: (objects: Array<TextObject | MentionObject | EquationObject>): string => {
-    return objects.map((object) => ObjectTransformers[object.type](object as any)).join('');
+    return objects?.map((object) => ObjectTransformers[object.type](object as any)).join('') ?? '';
   },
 };
 
