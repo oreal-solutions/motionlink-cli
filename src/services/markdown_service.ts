@@ -16,7 +16,7 @@ export function applyAnnotations(
 
   if (annotations.code) out = `\`${out}\``;
   if (annotations.strikethrough) out = `~~${out}~~`;
-  if (annotations.italic) out = `__${out}__`;
+  if (annotations.italic) out = `*${out}*`;
   if (annotations.bold) out = `**${out}**`;
 
   return out;

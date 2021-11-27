@@ -90,7 +90,7 @@ describe('ObjectTransformers tests', () => {
         expect(ObjectTransformers.text(object)).to.equal('**abc**');
       });
 
-      it("Should return '__abc__' when only the italic annotation is true", () => {
+      it("Should return '*abc*' when only the italic annotation is true", () => {
         const object = makeTextObjectWithAnnotations({
           bold: false,
           italic: true,
@@ -100,7 +100,7 @@ describe('ObjectTransformers tests', () => {
           color: 'default',
         });
 
-        expect(ObjectTransformers.text(object)).to.equal('__abc__');
+        expect(ObjectTransformers.text(object)).to.equal('*abc*');
       });
 
       it("Should return '~~abc~~' when only the strikethrough annotation is true", () => {
@@ -129,7 +129,7 @@ describe('ObjectTransformers tests', () => {
         expect(ObjectTransformers.text(object)).to.equal('`abc`');
       });
 
-      it("Should return '**__~~`abc`~~__**' when bold, italic, strikethrough, and code annotations are true", () => {
+      it("Should return '***~~`abc`~~***' when bold, italic, strikethrough, and code annotations are true", () => {
         const object = makeTextObjectWithAnnotations({
           bold: true,
           italic: true,
@@ -139,7 +139,7 @@ describe('ObjectTransformers tests', () => {
           color: 'default',
         });
 
-        expect(ObjectTransformers.text(object)).to.equal('**__~~`abc`~~__**');
+        expect(ObjectTransformers.text(object)).to.equal('***~~`abc`~~***');
       });
     });
 
@@ -461,7 +461,7 @@ describe('ObjectTransformers tests', () => {
           expect(ObjectTransformers.mention(object)).to.equal('**[2020-12-08T12:00:00Z](example.com)**');
         });
 
-        it("Should return '__[2020-12-08T12:00:00Z](example.com)__' when only the italic annotation is true", () => {
+        it("Should return '*[2020-12-08T12:00:00Z](example.com)*' when only the italic annotation is true", () => {
           const object = makeMentionObjectForDateWithAnnotations({
             bold: false,
             italic: true,
@@ -471,7 +471,7 @@ describe('ObjectTransformers tests', () => {
             color: 'default',
           });
 
-          expect(ObjectTransformers.mention(object)).to.equal('__[2020-12-08T12:00:00Z](example.com)__');
+          expect(ObjectTransformers.mention(object)).to.equal('*[2020-12-08T12:00:00Z](example.com)*');
         });
 
         it("Should return '~~[2020-12-08T12:00:00Z](example.com)~~' when only the strikethrough annotation is true", () => {
@@ -500,7 +500,7 @@ describe('ObjectTransformers tests', () => {
           expect(ObjectTransformers.mention(object)).to.equal('`[2020-12-08T12:00:00Z](example.com)`');
         });
 
-        it("Should return '**__~~`[2020-12-08T12:00:00Z](example.com)`~~__**' when the bold, italic, strikethrough and code annotations are true", () => {
+        it("Should return '***~~`[2020-12-08T12:00:00Z](example.com)`~~***' when the bold, italic, strikethrough and code annotations are true", () => {
           const object = makeMentionObjectForDateWithAnnotations({
             bold: true,
             italic: true,
@@ -510,7 +510,7 @@ describe('ObjectTransformers tests', () => {
             color: 'default',
           });
 
-          expect(ObjectTransformers.mention(object)).to.equal('**__~~`[2020-12-08T12:00:00Z](example.com)`~~__**');
+          expect(ObjectTransformers.mention(object)).to.equal('***~~`[2020-12-08T12:00:00Z](example.com)`~~***');
         });
       });
     });
@@ -610,7 +610,7 @@ describe('ObjectTransformers tests', () => {
         expect(ObjectTransformers.equation(object)).to.equal('**[$abc$](example.com)**');
       });
 
-      it("Should return '__[$abc$](example.com)__' when only the italic annotation is true", () => {
+      it("Should return '*[$abc$](example.com)*' when only the italic annotation is true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: false,
@@ -623,7 +623,7 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('__[$abc$](example.com)__');
+        expect(ObjectTransformers.equation(object)).to.equal('*[$abc$](example.com)*');
       });
 
       it("Should return '~~[$abc$](example.com)~~' when only the strikethrough annotation is true", () => {
@@ -658,7 +658,7 @@ describe('ObjectTransformers tests', () => {
         expect(ObjectTransformers.equation(object)).to.equal('`[$abc$](example.com)`');
       });
 
-      it("Should return '**__~~`[$abc$](example.com)`~~__**' when the bold, italic, strikethrough, and code annotations are true", () => {
+      it("Should return '***~~`[$abc$](example.com)`~~***' when the bold, italic, strikethrough, and code annotations are true", () => {
         const object = makeEquationObjectWithAnnotations(
           {
             bold: true,
@@ -671,7 +671,7 @@ describe('ObjectTransformers tests', () => {
           'abc',
         );
 
-        expect(ObjectTransformers.equation(object)).to.equal('**__~~`[$abc$](example.com)`~~__**');
+        expect(ObjectTransformers.equation(object)).to.equal('***~~`[$abc$](example.com)`~~***');
       });
     });
   });
