@@ -50,7 +50,6 @@
     "chai": "^4.3.4",
     "cross-env": "^7.0.3",
     "deep-equal-in-any-order": "^1.1.15",
-    "get-relative-path": "^1.0.2",
     "mocha": "^9.1.2",
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
@@ -61,6 +60,7 @@
   "dependencies": {
     "@notionhq/client": "^0.4.4",
     "axios": "^0.23.0",
+    "get-relative-path": "^1.0.2",
     "mustache": "^4.2.0",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
