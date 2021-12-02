@@ -116,7 +116,7 @@ export async function resultOf<T>(notionCall: () => Promise<T>): Promise<T> {
   try {
     return await notionCall();
   } catch (e) {
-    if ((e as any).status === APIErrorCode.RateLimited) {
+    if ((e as any).code === APIErrorCode.RateLimited) {
       await sleep(sleepTimeInMillis);
       return resultOf(notionCall);
     }

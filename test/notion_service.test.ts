@@ -18,7 +18,7 @@ describe('service_utils tests', () => {
         await resultOf(() => {
           count++;
           return new Promise<string>((resolve, reject) => {
-            if (count < 2) reject({ status: APIErrorCode.RateLimited });
+            if (count < 2) reject({ code: APIErrorCode.RateLimited });
             else resolve('abc');
           });
         });
@@ -33,7 +33,7 @@ describe('service_utils tests', () => {
         const ret = await resultOf(() => {
           count++;
           return new Promise<string>((resolve, reject) => {
-            if (count < 2) reject({ status: APIErrorCode.RateLimited });
+            if (count < 2) reject({ code: APIErrorCode.RateLimited });
             else resolve('abc');
           });
         });
