@@ -1,24 +1,28 @@
-# motionlink-cli
+# Motionlink-cli
 
-Making it easy to use Notion as a Content Management system for personal websites, portfolios, blogs, business homepages, and other kinds of static websites.
+Use Notion as a Content Management System for personal websites, portfolios, blogs, business homepages, and other kinds of static websites.
 
-- [x] Read all page properties
-- [x] Read all page blocks
-- [x] Generate Markdown from page blocks
-- [x] Read all 'asked for' databases
+## Features
 
-See example of my personal website [here](https://github.com/bats64mgutsi/personalportfolio).
+🎨 **Easy to Use** - Designed from the ground up to be easy to setup so you can quickly get your content out there.
 
-## Scripts
+⚡️ **Built for traffic** - MotionLink can be integrated with any static site generator, allowing your webpages to be served at lightning speed with any hosting service.
 
-### Publish current code as latest release
+🗞 **Powered by Notion** - Publish your content from the same app you use to manage your work and personal life. No need for a third-party CMS, or even worse, dealing with markdown files.
 
+## Install 
 ```bash
-$ npm run publishLatest
+npm install motionlink-cli --save-dev
 ```
 
-### Publish current code as next release (dev release)
+## How to use
 
-```bash
-$ npm run publishNext
-```
+See the [Getting started guide](https://motionlink-docs.web.app).
+
+## Contributing
+
+Feel free to contribute, drop issues and rquest features! We also have a our [discussions](https://github.com/oreal-solutions/motionlink-cli/discussions) tab enabled. Feel free to start conversations.
+
+## Author
+
+[Batandwa Mgutsi](https://github.com/bats64mgutsi)
