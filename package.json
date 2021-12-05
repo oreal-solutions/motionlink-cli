@@ -24,9 +24,11 @@
     "url": "https://github.com/oreal-solutions/motionlink-cli"
   },
   "keywords": [
-    "reactive",
-    "state",
-    "react"
+    "cms",
+    "portfolio",
+    "jamstack",
+    "notion-api",
+    "notion-blog"
   ],
   "author": "Oreal Solutions",
   "license": "MIT",
