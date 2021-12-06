@@ -64,7 +64,10 @@ export type Context = {
    *
    * If the media is hosted by Notion, it will be downloaded to a media folder in the
    * `outDir` of this TemplateRule and the returned `src` value will be the asset path
-   * in `outDir`, else the file url will be returned as is given in the media object
+   * in `outDir`, else the file url will be returned as is given in the media object.
+   *
+   * The return value of this function is not affected by the value of
+   * `TemplateRule.writeMediaTo`.
    */
   fetchMedia: (object: FileObject) => { src: string; captionMarkdown: string };
 };
@@ -99,4 +102,16 @@ export type TemplateRule = {
   outDir: string;
   uses: DatabaseRule;
   alsoUses: DatabaseRule[];
+
+  /**
+   * The folder to write media assets to.
+   *
+   * By default media is placed in the same folder as the page requesting it. Setting this field
+   * forces the media to be placed in this folder.
+   *
+   * Do note, however, that `Context.fetchMedia` will will return the path of the media
+   * as if it were in the same folder as the page requesting it, i.e setting this value
+   * does not affect the return value of `Context.fetchMedia`.
+   */
+  writeMediaTo?: string;
 };

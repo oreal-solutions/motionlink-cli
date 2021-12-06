@@ -16,7 +16,7 @@ describe('MediaDestinationController tests', () => {
   }
 
   describe('makeFileDestionationForAsset(args)', () => {
-    describe("When instance is create with TemplateRule that has 'abc' as outDir", () => {
+    describe("When instance is create with TemplateRule that has 'abc' as outDir and undefined for writeMediaTo", () => {
       const instance = makeInstanceWithTemplateOutDir('abc');
 
       function assertDoesNotCreateAnyFolderWhenMediaFolderExists(url: string) {
@@ -87,14 +87,16 @@ describe('MediaDestinationController tests', () => {
         );
       });
     });
+  });
 
-    describe("When instance is created with TemplateRule that has 'aaa' as outDir", () => {
-      const instance = makeInstanceWithTemplateOutDir('aaa');
+  describe('static getAbsoluteDestinationPath(rule, subfolderNAme', () => {
+    describe("When subfolderName is 'zrc'", () => {
+      it("Should return 'abc/zrc' when  outDir is 'abc' and writeMediaTo is undefined", () => {
+        expect(MediaDestinationController.getAbsoluteDestinationPath('abc', undefined, 'zrc')).to.equal('abc/zrc');
+      });
 
-      it("Should return 'images/file1.png' when given 'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256'", () => {
-        const url =
-          'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/05ce5030-65a3-459b-9bac-b1020e3e2a6a/file1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256';
-        expect(instance.makeFileDestinationForAssetWithUrl(url)).to.equal('images/file1.png');
+      it("Should return 'efg/zrc' when  outDir is 'abc' and writeMediaTo is 'efg'", () => {
+        expect(MediaDestinationController.getAbsoluteDestinationPath('abc', 'efg', 'zrc')).to.equal('efg/zrc');
       });
     });
   });

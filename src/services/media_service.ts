@@ -20,13 +20,19 @@ export default class MediaService {
       forRule: templateRule,
     });
 
-    const relativeDestintation = destinationController.makeFileDestinationForAssetWithUrl(url);
+    const relativeDestination = destinationController.makeFileDestinationForAssetWithUrl(url);
+    const absPath = MediaDestinationController.getAbsoluteDestinationPath(
+      templateRule.outDir,
+      templateRule.writeMediaTo,
+      relativeDestination,
+    );
+
     this.requests.set(url, {
-      relativePath: relativeDestintation,
-      absolutePath: `${templateRule.outDir}/${relativeDestintation}`,
+      relativePath: relativeDestination,
+      absolutePath: absPath,
     });
 
-    return relativeDestintation;
+    return relativeDestination;
   }
 
   public async commit(): Promise<void> {
@@ -64,12 +70,24 @@ export class MediaDestinationController {
   public makeFileDestinationForAssetWithUrl(url: string): string {
     const subfolderName = this.getSubfolderNameForUrl(url);
     const filename = this.getUrlBasename(url);
-    const parentFolder = `${this.templateRule.outDir}/${subfolderName}`;
+    const parentFolder = MediaDestinationController.getAbsoluteDestinationPath(
+      this.templateRule.outDir,
+      this.templateRule.writeMediaTo,
+      subfolderName,
+    );
 
     if (!FileSystemService.instance.doesFolderExist(parentFolder))
       FileSystemService.instance.createFolder(parentFolder);
 
     return `${subfolderName}/${filename}`;
+  }
+
+  public static getAbsoluteDestinationPath(
+    outDir: string,
+    writeMediaTo: string | undefined,
+    subfolderName: string,
+  ): string {
+    return Boolean(writeMediaTo) ? `${writeMediaTo}/${subfolderName}` : `${outDir}/${subfolderName}`;
   }
 
   private getSubfolderNameForUrl(url: string): string {
