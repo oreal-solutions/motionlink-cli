@@ -7,7 +7,7 @@ export type NotionBlock = {
 };
 
 export type NotionPage = {
-  otherData: object;
+  otherData: Record<string, any>;
   data: GetPageResponse;
   blocks: NotionBlock[];
 
@@ -32,7 +32,7 @@ export type Context = {
    * the `DatabaseRule` in this `TemplateRule.alsoUses` whose `database` field is
    * `abc`. It will be undefined if there is no such `DatabaseRule`.
    */
-  others: object;
+  others: Record<string, NotionDatabase>;
 
   /**
    * Transforms the given blocks to markdown with the `BlockTransformers` in

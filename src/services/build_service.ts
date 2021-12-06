@@ -209,7 +209,7 @@ export class SecondaryDatabasesFetcher {
     databaseRules: DatabaseRule[],
     databaseAssociations: NotionDatabaseAssociation[],
     ctx: Context,
-  ): Promise<object> {
+  ): Promise<Record<string, NotionDatabase>> {
     const others: any = {};
     const promises = new Array<Promise<{ rule: DatabaseRule; db: NotionDatabase }>>();
 
