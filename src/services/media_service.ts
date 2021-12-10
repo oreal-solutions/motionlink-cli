@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { TemplateRule } from '../models/config_models';
 import mediaTypes from '../constants/media_types';
 import FileSystemService from './file_system_service';
+import FileNameService from './file_name_service';
 
 /**
  * A service for fetching media assets from given Notion URLs.
@@ -69,7 +70,7 @@ export class MediaDestinationController {
 
   public makeFileDestinationForAssetWithUrl(url: string): string {
     const subfolderName = this.getSubfolderNameForUrl(url);
-    const filename = this.getUrlBasename(url);
+    const filename = this.genUniqueBasename(url);
     const parentFolder = MediaDestinationController.getAbsoluteDestinationPath(
       this.templateRule.outDir,
       this.templateRule.writeMediaTo,
@@ -98,6 +99,18 @@ export class MediaDestinationController {
     }
 
     return 'other_media';
+  }
+
+  private genUniqueBasename(url: string) {
+    const basename = this.getUrlBasename(url);
+    const fileExtensionStartIndex = basename.lastIndexOf('.');
+    const uniqueName = FileNameService.instance.genUnique();
+
+    if (fileExtensionStartIndex < 0) {
+      return uniqueName;
+    } else {
+      return `${uniqueName}${basename.substring(fileExtensionStartIndex)}`;
+    }
   }
 
   private getUrlBasename(url: string): string {
