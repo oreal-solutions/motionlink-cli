@@ -118,100 +118,113 @@ declare type BlockTransformerType = (block: GetBlockResponse, rule: TemplateRule
  */
 export const BlockTransformers: Record<string, BlockTransformerType> = {
   paragraph: (block: GetBlockResponse): string => {
-    if (block.type === 'paragraph') {
-      return transformAllObjectsWithPrefix(block.paragraph.text, '');
+    const blk = block as any;
+    if (blk.type === 'paragraph') {
+      return transformAllObjectsWithPrefix(blk.paragraph.rich_text, '');
     }
 
     return '';
   },
 
   heading_1: (block: GetBlockResponse): string => {
-    if (block.type === 'heading_1') {
-      return transformAllObjectsWithPrefix(block.heading_1.text, '# ');
+    const blk = block as any;
+
+    if (blk.type === 'heading_1') {
+      return transformAllObjectsWithPrefix(blk.heading_1.rich_text, '# ');
     }
 
     return '';
   },
 
   heading_2: (block: GetBlockResponse): string => {
-    if (block.type === 'heading_2') {
-      return transformAllObjectsWithPrefix(block.heading_2.text, '## ');
+    const blk = block as any;
+    if (blk.type === 'heading_2') {
+      return transformAllObjectsWithPrefix(blk.heading_2.rich_text, '## ');
     }
 
     return '';
   },
 
   heading_3: (block: GetBlockResponse): string => {
-    if (block.type === 'heading_3') {
-      return transformAllObjectsWithPrefix(block.heading_3.text, '### ');
+    const blk = block as any;
+    if (blk.type === 'heading_3') {
+      return transformAllObjectsWithPrefix(blk.heading_3.rich_text, '### ');
     }
 
     return '';
   },
 
   bulleted_list_item: (block: GetBlockResponse): string => {
-    if (block.type === 'bulleted_list_item') {
-      return transformAllObjectsWithPrefix(block.bulleted_list_item.text, '- ');
+    const blk = block as any;
+    if (blk.type === 'bulleted_list_item') {
+      return transformAllObjectsWithPrefix(blk.bulleted_list_item.rich_text, '- ');
     }
 
     return '';
   },
 
   numbered_list_item: (block: GetBlockResponse, _): string => {
-    if (block.type === 'numbered_list_item') {
-      return transformAllObjectsWithPrefix(block.numbered_list_item.text, `1. `);
+    const blk = block as any;
+    if (blk.type === 'numbered_list_item') {
+      return transformAllObjectsWithPrefix(blk.numbered_list_item.rich_text, `1. `);
     }
 
     return '';
   },
 
   to_do: (block: GetBlockResponse): string => {
-    if (block.type === 'to_do') {
-      const check = block.to_do.checked ? 'X' : ' ';
-      return transformAllObjectsWithPrefix(block.to_do.text, `- [${check}] `);
+    const blk = block as any;
+    if (blk.type === 'to_do') {
+      const check = blk.to_do.checked ? 'X' : ' ';
+      return transformAllObjectsWithPrefix(blk.to_do.rich_text, `- [${check}] `);
     }
 
     return '';
   },
 
   toggle: (block: GetBlockResponse): string => {
-    if (block.type === 'toggle') {
-      return transformAllObjectsWithPrefix(block.toggle.text, '');
+    const blk = block as any;
+    if (blk.type === 'toggle') {
+      return transformAllObjectsWithPrefix(blk.toggle.rich_text, '');
     }
 
     return '';
   },
 
   child_page: (block: GetBlockResponse): string => {
-    if (block.type === 'child_page') {
+    const blk = block as any;
+    if (blk.type === 'child_page') {
       const id = block.id.split('-').join('');
-      return `[${block.child_page.title}](https://www.notion.so/${id})`;
+      return `[${blk.child_page.title}](https://www.notion.so/${id})`;
     }
 
     return '';
   },
 
   child_database: (block: GetBlockResponse): string => {
-    if (block.type === 'child_database') {
+    const blk = block as any;
+    if (blk.type === 'child_database') {
       const id = block.id.split('-').join('');
-      return `[${block.child_database.title}](https://www.notion.so/${id})`;
+      return `[${blk.child_database.title}](https://www.notion.so/${id})`;
     }
 
     return '';
   },
 
   embed: (block: GetBlockResponse): string => {
-    if (block.type === 'embed') {
-      const caption = transformAllObjectsWithPrefix(block.embed.caption, '');
-      return `[${caption}](${block.embed.url} ':include')`;
+    const blk = block as any;
+    if (blk.type === 'embed') {
+      const caption = transformAllObjectsWithPrefix(blk.embed.caption, '');
+      return `[${caption}](${blk.embed.url} ':include')`;
     }
 
     return '';
   },
 
   image: (block: GetBlockResponse, rule: TemplateRule): string => {
-    if (block.type === 'image') {
-      const media = getMedia(block.image, rule);
+    const blk = block as any;
+    if (blk.type === 'image') {
+      const media = getMedia(blk.image, rule);
       return `![${media.captionMarkdown}](${media.src} "${media.captionMarkdown}")`;
     }
 
@@ -219,8 +232,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   video: (block: GetBlockResponse, rule: TemplateRule): string => {
-    if (block.type === 'video') {
-      const media = getMedia(block.video, rule);
+    const blk = block as any;
+    if (blk.type === 'video') {
+      const media = getMedia(blk.video, rule);
       return `[${media.captionMarkdown}](${media.src} ':include')`;
     }
 
@@ -228,8 +242,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   file: (block: GetBlockResponse, rule: TemplateRule): string => {
-    if (block.type === 'file') {
-      const media = getMedia(block.file, rule);
+    const blk = block as any;
+    if (blk.type === 'file') {
+      const media = getMedia(blk.file, rule);
       return `[${media.captionMarkdown}](${media.src} ':include')`;
     }
 
@@ -237,8 +252,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   pdf: (block: GetBlockResponse, rule: TemplateRule): string => {
-    if (block.type === 'pdf') {
-      const media = getMedia(block.pdf, rule);
+    const blk = block as any;
+    if (blk.type === 'pdf') {
+      const media = getMedia(blk.pdf, rule);
       return `[${media.captionMarkdown}](${media.src} ':include')`;
     }
 
@@ -246,8 +262,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   audio: (block: GetBlockResponse, rule: TemplateRule): string => {
-    if (block.type === 'audio') {
-      const media = getMedia(block.audio, rule);
+    const blk = block as any;
+    if (blk.type === 'audio') {
+      const media = getMedia(blk.audio, rule);
       return `[${media.captionMarkdown}](${media.src} ':include')`;
     }
 
@@ -255,8 +272,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   bookmark: (block: GetBlockResponse): string => {
-    if (block.type === 'bookmark') {
-      const url = block.bookmark.url;
+    const blk = block as any;
+    if (blk.type === 'bookmark') {
+      const url = blk.bookmark.url;
       return `[${url}](${url})`;
     }
 
@@ -264,10 +282,11 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   callout: (block: GetBlockResponse): string => {
-    if (block.type === 'callout') {
-      const text = transformAllObjectsWithPrefix(block.callout.text, '');
-      if (block.callout.icon?.type === 'emoji') {
-        const icon = block.callout.icon.emoji;
+    const blk = block as any;
+    if (blk.type === 'callout') {
+      const text = transformAllObjectsWithPrefix(blk.callout.rich_text, '');
+      if (blk.callout.icon?.type === 'emoji') {
+        const icon = blk.callout.icon.emoji;
         return `> ${icon} ${text}`;
       }
 
@@ -278,8 +297,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   quote: (block: GetBlockResponse): string => {
-    if (block.type === 'quote') {
-      const text = transformAllObjectsWithPrefix(block.quote.text, '');
+    const blk = block as any;
+    if (blk.type === 'quote') {
+      const text = transformAllObjectsWithPrefix(blk.quote.rich_text, '');
       return `> ${text}`;
     }
 
@@ -287,8 +307,9 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   equation: (block: GetBlockResponse): string => {
-    if (block.type === 'equation') {
-      const expression = block.equation.expression;
+    const blk = block as any;
+    if (blk.type === 'equation') {
+      const expression = blk.equation.expression;
       return `$$${expression}$$`;
     }
 
@@ -308,9 +329,10 @@ export const BlockTransformers: Record<string, BlockTransformerType> = {
   },
 
   code: (block: GetBlockResponse): string => {
-    if (block.type === 'code') {
-      const text = transformAllObjectsWithPrefix(block.code.text, '');
-      return '```' + block.code.language + '\n' + text + '\n```';
+    const blk = block as any;
+    if (blk.type === 'code') {
+      const text = transformAllObjectsWithPrefix(blk.code.rich_text, '');
+      return '```' + blk.code.language + '\n' + text + '\n```';
     }
     return '';
   },
@@ -349,7 +371,7 @@ export default class MarkdownService {
 
   private getTransformerForBlock(block: NotionBlock): BlockTransformerType | undefined {
     for (const blockType of Object.keys(BlockTransformers)) {
-      if (blockType === block.data.type) {
+      if (blockType === (block.data as any).type) {
         return BlockTransformers[blockType];
       }
     }
@@ -365,7 +387,7 @@ export default class MarkdownService {
     if (transformer) {
       return transformer(block.data, rule);
     } else {
-      return `Unknown Block: ${block.data.type}`;
+      return `Unknown Block: ${(block.data as any).type}`;
     }
   }
 

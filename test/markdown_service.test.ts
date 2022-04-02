@@ -717,7 +717,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'paragraph',
         paragraph: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -738,7 +739,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'heading_1',
         heading_1: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -759,7 +761,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'heading_2',
         heading_2: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -780,7 +783,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'heading_3',
         heading_3: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -801,7 +805,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'bulleted_list_item',
         bulleted_list_item: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -822,7 +827,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'numbered_list_item',
         numbered_list_item: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -843,7 +849,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'to_do',
         to_do: {
-          text: [],
+          rich_text: [],
+          color: 'default',
           checked: false,
         },
         object: 'block',
@@ -863,7 +870,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'to_do',
         to_do: {
-          text: [],
+          rich_text: [],
+          color: 'default',
           checked: true,
         },
         object: 'block',
@@ -883,7 +891,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'toggle',
         toggle: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -1114,7 +1123,8 @@ describe('BlockTransformers tests', () => {
               type: 'emoji',
               emoji: '😉',
             },
-            text: [],
+            rich_text: [],
+            color: 'default',
           },
           object: 'block',
           id: '',
@@ -1141,7 +1151,8 @@ describe('BlockTransformers tests', () => {
                 url: 'example.com',
               },
             },
-            text: [],
+            rich_text: [],
+            color: 'default',
           },
           object: 'block',
           id: '',
@@ -1169,7 +1180,8 @@ describe('BlockTransformers tests', () => {
                 expiry_time: '',
               },
             },
-            text: [],
+            rich_text: [],
+            color: 'default',
           },
           object: 'block',
           id: '',
@@ -1191,7 +1203,8 @@ describe('BlockTransformers tests', () => {
           type: 'callout',
           callout: {
             icon: null,
-            text: [],
+            rich_text: [],
+            color: 'default',
           },
           object: 'block',
           id: '',
@@ -1213,7 +1226,8 @@ describe('BlockTransformers tests', () => {
       const block: GetBlockResponse = {
         type: 'quote',
         quote: {
-          text: [],
+          rich_text: [],
+          color: 'default',
         },
         object: 'block',
         id: '',
@@ -1269,7 +1283,9 @@ describe('BlockTransformers tests', () => {
     it("Should return ''", () => {
       const block: GetBlockResponse = {
         type: 'table_of_contents',
-        table_of_contents: {},
+        table_of_contents: {
+          color: 'default',
+        },
         object: 'block',
         id: '',
         created_time: '',
@@ -1307,7 +1323,8 @@ describe('BlockTransformers tests', () => {
         type: 'code',
         code: {
           language: 'java',
-          text: [],
+          rich_text: [],
+          caption: [],
         },
         object: 'block',
         id: '',
@@ -1386,8 +1403,8 @@ describe('getMedia tests', () => {
 describe('MarkdownService tests', () => {
   describe('genMarkdownForBlocks(blocks)', () => {
     setup(() => {
-      BlockTransformers.heading_1 = (block, _) => `${block.type} content`;
-      BlockTransformers.paragraph = (block, _) => `${block.type} content`;
+      BlockTransformers.heading_1 = (block, _) => `${(block as any).type} content`;
+      BlockTransformers.paragraph = (block, _) => `${(block as any).type} content`;
     });
 
     it('Should add an empty line between blocks', () => {

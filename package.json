@@ -61,7 +61,7 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
-    "@notionhq/client": "^0.4.4",
+    "@notionhq/client": "^1.0.4",
     "axios": "^0.23.0",
     "get-relative-path": "^1.0.2",
     "mustache": "^4.2.0",

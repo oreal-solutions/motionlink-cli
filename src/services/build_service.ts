@@ -124,7 +124,7 @@ export class BlockChildrenFetcher {
   }
 
   private async _parseBlock(blockData: GetBlockResponse, notionToken: Token): Promise<NotionBlock> {
-    if (blockData.has_children) {
+    if ((blockData as any).has_children) {
       return {
         data: blockData,
         children: await this.fetchChildren(blockData.id, notionToken),
