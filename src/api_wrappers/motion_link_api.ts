@@ -20,7 +20,7 @@ export default class MotionLinkApi {
   }
 
   private async callHttpFunction(name: string, body: object): Promise<any> {
-    const endpoint = `http://motionlink.centralus.cloudapp.azure.com:8080/motionlink-aec23/us-central1/cli_tool_service-api/${name}`;
+    const endpoint = `https://us-central1-motionlink-aec23.cloudfunctions.net/cli_tool_service-api/${name}`;
 
     try {
       const response = await axios.post(endpoint, { data: body });
