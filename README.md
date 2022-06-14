@@ -2,13 +2,43 @@
 
 Use Notion as a Content Management System for personal websites, portfolios, blogs, business homepages, and other kinds of static websites.
 
-## Features
+## Plain Markdown Support
 
-🎨 **Easy to Use** - Designed from the ground up to be easy to setup so you can quickly get your content out there.
+### Supported Notion Blocks
 
-⚡️ **Built for high traffic** - MotionLink can be integrated with any static site generator, allowing your webpages to be served at lightning speed with any hosting service.
+- [x] Paragraph blocks
+- [x] Heading one blocks
+- [x] Heading two blocks
+- [x] Heading three blocks
+- [x] Callout blocks
+- [x] Quote blocks
+- [x] Bulleted list items
+- [x] Numbered list item blocks
+- [x] TODO blocks
+- [ ] Toggle blocks
+- [x] Code blocks
+- [x] Child page blocks (Adds link to page)
+- [x] Child database blocks (Adds link to database)
+- [x] Embed blocks (Adds link to resource)
+- [x] Image blocks
+- [x] Video blocks (Adds link to video)
+- [x] File blocks (Adds link to file)
+- [x] PDF blocks (Adds link to pdf)
+- [x] Bookmark blocks (Adds link to bookmark)
+- [x] Equation blocks
+- [x] Divider blocks
+- [ ] Table of contents blocks
+- [ ] Link preview blocks
+- [ ] Template blocks
+- [ ] Link to page blocks
+- [ ] Synced Block blocks
+- [ ] Table blocks
+- [ ] Table row blocks
 
-🗞 **Powered by Notion** - Publish your content from the same app you use to manage your work and personal life. No need for a third-party CMS, or even worse, dealing with markdown files.
+### Less likely to be supported blocks
+
+- Column List and Column blocks
+- Breadcrumb blocks
 
 ## Install
 
