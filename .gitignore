@@ -3,3 +3,6 @@ node_modules
 
 # Public folder in example
 public
+
+# MacOS init file
+.DS_Store
