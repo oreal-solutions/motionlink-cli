@@ -48,7 +48,7 @@ npm install motionlink-cli --save-dev
 
 ## How to use
 
-See the [Getting started guide](https://motionlink.lytowl.com/docs/Getting%20started).
+See the [Getting started guide](https://motionlink.co/docs/Getting%20started).
 
 ## Contributing
 
