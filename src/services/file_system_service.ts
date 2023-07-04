@@ -14,7 +14,9 @@ export default class FileSystemService {
   }
 
   public createFolder(path: string): void {
-    fs.mkdirSync(path);
+    fs.mkdirSync(path, {
+      recursive: true,
+    });
   }
 
   private static _instance: FileSystemService;

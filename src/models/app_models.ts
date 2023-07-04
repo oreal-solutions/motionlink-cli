@@ -12,8 +12,14 @@ export type NotionDatabaseAssociation = {
   notionIntegrationToken: Token;
 };
 
+
 // API Models
 
 export type StringResponseBody = {
   value: string;
 };
+
+export type ConnectResult = {
+  secureUrl?: string,
+  vars: string,
+}

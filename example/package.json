@@ -1,5 +1,5 @@
 {
   "devDependencies": {
-    "motionlink-cli": "^0.4.0-alpha.4"
+    "motionlink-cli": "^0.6.0"
   }
 }
