@@ -50,7 +50,7 @@ npm install motionlink-cli --save-dev
 
 See the [Getting started guide](https://motionlink.co/docs/Getting%20started).
 
-## Available commands
+## Available commands
 
 ### Motionlink vars
 
@@ -64,7 +64,7 @@ An easier way of creating links, however is via the connect command (See below).
 
 Once you have your Motionlink [config file](https://motionlink.co/docs/CLI), you can use the CLI with the following commands.
 
-### Classic build
+### Classic build
 
 The classic build command lets you run your config file by passing your Motionlink vars string on the command line. If working with one link, this command might not be an issue, but for very long Motionlink vars strings it can be hard to read.
 
