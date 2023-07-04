@@ -25,15 +25,11 @@ export default class ConsoleService {
   public async connect(githubRepoUrl: string, host: Host, consoleUrl?: string): Promise<ConnectResult> {
     return new Promise((resolve, reject) => {
       const app = express();
+      if (!Boolean(consoleUrl)) {
+        consoleUrl = 'https://app.motionlink.co';
+      }
 
       let server: Server;
-      app.get('/', (_, res) => {
-        res
-          .status(200)
-          .send(`<h2>Connect request complete. You can close this window and continue from CLI.</h2>`)
-          .set('Connection', 'close');
-      });
-
       app.get('/callback', (req, res) => {
         const status = req.query.status === 'true';
         if (status) {
@@ -45,15 +41,12 @@ export default class ConsoleService {
           reject(req.query.message);
         }
 
-        res.redirect('/');
-        setTimeout(() => server.close(), 3000);
+        res.redirect(`${consoleUrl}/connect_completed`);
+        setTimeout(() => server.close(), 2000);
       });
 
       server = app.listen(HANDLER_PORT, () => {
         const redirectUri = `http://localhost:${HANDLER_PORT}/callback`;
-        if (!Boolean(consoleUrl)) {
-          consoleUrl = 'https://app.motionlink.co';
-        }
 
         const queryUrl = new URL(`${consoleUrl!}/market`);
         queryUrl.searchParams.append('source', githubRepoUrl);
