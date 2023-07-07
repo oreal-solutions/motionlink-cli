@@ -45,7 +45,7 @@ export default class ConsoleService {
         setTimeout(() => server.close(), 2000);
       });
 
-      server = app.listen(HANDLER_PORT, () => {
+      server = app.listen(HANDLER_PORT, async () => {
         const redirectUri = `http://localhost:${HANDLER_PORT}/callback`;
 
         const queryUrl = new URL(`${consoleUrl!}/market`);
@@ -55,11 +55,7 @@ export default class ConsoleService {
         queryUrl.searchParams.append('q', 'connect');
 
         this.logger.logWithColor(queryUrl.href);
-        try {
-          openurl.open(queryUrl.href);
-        } catch (e) {
-          console.error('...No browser detected. Copy and paste link into your browser.');
-        }
+        openurl.open(queryUrl.href);
       });
     });
   }
