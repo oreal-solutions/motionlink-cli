@@ -55,7 +55,11 @@ export default class ConsoleService {
         queryUrl.searchParams.append('q', 'connect');
 
         this.logger.logWithColor(queryUrl.href);
-        openurl.open(queryUrl.href);
+        try {
+          openurl.open(queryUrl.href);
+        } catch (e) {
+          console.error('...No browser detected. Copy and paste link into your browser.');
+        }
       });
     });
   }
